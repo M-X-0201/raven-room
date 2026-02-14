@@ -1,0 +1,1057 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>拉文克劳休息室</title>
+
+<style>
+:root{
+  --bg1:#fbfbff;
+  --bg2:#f3f5ff;
+  --card:rgba(255,255,255,.70);
+  --text:#2b2f45;
+  --muted:#7a7f9f;
+  --iris:#7d8cff;
+  --iris2:#a7b2ff;
+  --mint:#9de7de;
+
+  --radiusL:36px;
+  --radiusM:26px;
+  --radiusS:20px;
+
+  --shadow:0 18px 55px rgba(40,50,90,.10);
+  --shadow2:0 10px 26px rgba(40,50,90,.08);
+  --border:rgba(70,80,130,.12);
+  --inner: inset 0 1px 0 rgba(255,255,255,.7);
+}
+
+[data-theme="dark"]{
+  --bg1:#0f1326;
+  --bg2:#11183a;
+  --card:rgba(255,255,255,.10);
+  --text:#f2f3ff;
+  --muted:#a7add6;
+
+  --shadow:0 22px 70px rgba(0,0,0,.45);
+  --shadow2:0 14px 36px rgba(0,0,0,.35);
+  --border:rgba(255,255,255,.14);
+  --inner: inset 0 1px 0 rgba(255,255,255,.12);
+}
+
+*{ box-sizing:border-box; }
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,"PingFang SC","Microsoft YaHei";
+  color:var(--text);
+  background:
+    radial-gradient(900px 600px at 18% 14%, rgba(125,140,255,.16), transparent 62%),
+    radial-gradient(900px 600px at 82% 18%, rgba(157,231,222,.10), transparent 62%),
+    linear-gradient(180deg,var(--bg1),var(--bg2));
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:14px;
+  letter-spacing:.3px;
+  line-height:1.7;
+}
+
+/* 桌面端：强制一屏，不滚动。手机端允许自然滚动 */
+@media(min-width:941px){
+  body{ overflow:hidden; }
+}
+
+.grain{
+  position:fixed; inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='.10'/%3E%3C/svg%3E");
+  mix-blend-mode:overlay;
+  opacity:.55;
+  pointer-events:none;
+}
+[data-theme="dark"] .grain{ opacity:.30; }
+
+.shell{
+  width:980px;
+  max-width:95vw;
+  display:grid;
+  grid-template-columns: 1.08fr .92fr;
+  gap:14px;
+}
+
+/* 桌面端卡片高度压进一屏 */
+@media(min-width:941px){
+  .shell{
+    height: calc(100vh - 28px);
+  }
+}
+
+@media(max-width:940px){
+  body{ align-items:flex-start; }
+  .shell{ grid-template-columns:1fr; height:auto; }
+}
+
+.card{
+  border:1px solid var(--border);
+  border-radius:var(--radiusL);
+  background:linear-gradient(180deg, var(--card), rgba(255,255,255,.04));
+  box-shadow:var(--shadow);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  overflow:hidden;
+}
+
+.pad{ padding:16px; }
+
+.header{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  align-items:flex-start;
+}
+.hTitle{
+  font-size:18px;
+  font-weight:650;
+  margin:0;
+}
+.hSub{
+  font-size:12px;
+  color:var(--muted);
+  margin-top:4px;
+}
+
+.iconRow{ display:flex; gap:10px; align-items:center; }
+.iconBtn{
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.10);
+  color:var(--text);
+  border-radius:999px;
+  padding:10px 12px;
+  cursor:pointer;
+  box-shadow:var(--inner);
+  transition:.15s;
+  user-select:none;
+}
+.iconBtn:active{ transform:translateY(2px) scale(.98); }
+
+/* LEFT */
+.leftCard{
+  display:grid;
+  grid-template-rows: auto 1fr auto; /* header / body / bottom */
+  height:100%;
+}
+
+.leftBody{
+  display:grid;
+  grid-template-rows: auto auto auto; /* ring / quote / controls */
+  align-content:start;
+  padding: 6px 0 0;
+}
+
+.ringWrap{ display:grid; place-items:center; padding-top:2px; }
+
+.ring{
+  width:252px;height:252px; /* smaller to fit */
+  position:relative;
+  display:grid;
+  place-items:center;
+}
+@media(max-width:400px){
+  .ring{ width:220px;height:220px; }
+}
+
+.glow{
+  position:absolute;
+  inset:-14px;
+  border-radius:50%;
+  background:
+    radial-gradient(circle at 32% 30%, rgba(125,140,255,.20), transparent 62%),
+    radial-gradient(circle at 72% 62%, rgba(157,231,222,.10), transparent 62%),
+    radial-gradient(circle at 40% 84%, rgba(167,178,255,.12), transparent 62%);
+  filter:blur(18px);
+  animation:breathe 2.9s ease-in-out infinite;
+}
+@keyframes breathe{
+  0%,100%{ transform:scale(.985); opacity:.78; }
+  50%{ transform:scale(1.03); opacity:1; }
+}
+
+.ring svg{ transform:rotate(-90deg); filter: drop-shadow(0 14px 26px rgba(0,0,0,.10)); }
+.time{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:44px;
+  font-weight:640;
+  letter-spacing:1px;
+}
+
+.controls{
+  text-align:center;
+  margin-top:4px;
+}
+.btn{
+  border:none;
+  border-radius:999px;
+  padding:9px 14px; /* slightly smaller */
+  margin:6px;
+  font-weight:650;
+  cursor:pointer;
+  color:var(--text);
+  background:linear-gradient(180deg, rgba(125,140,255,.20), rgba(125,140,255,.08));
+  box-shadow:var(--shadow2), var(--inner);
+  transition:.15s;
+  user-select:none;
+}
+.btn.secondary{
+  background:linear-gradient(180deg, rgba(157,231,222,.14), rgba(157,231,222,.06));
+}
+.btn:active{ transform:translateY(2px) scale(.98); }
+
+.focusQuote{
+  margin:10px 16px 0;
+  border-radius:var(--radiusM);
+  background:linear-gradient(180deg, rgba(255,253,247,.82), rgba(255,255,255,.22));
+  border:1px dashed rgba(125,140,255,.28);
+  box-shadow:var(--shadow2);
+  padding:10px 12px;
+}
+[data-theme="dark"] .focusQuote{ background:rgba(255,255,255,.06); }
+.fqTop{ display:flex; align-items:center; gap:10px; margin-bottom:6px; }
+.fqMark{
+  width:30px;height:30px;
+  display:grid; place-items:center;
+  border-radius:12px;
+  border:1px solid rgba(125,140,255,.24);
+  background:rgba(125,140,255,.10);
+  box-shadow:var(--inner);
+  font-size:16px;
+}
+.fqLabel{ font-size:12px; color:var(--muted); font-weight:650; }
+.fqText{ font-size:14px; font-weight:560; }
+
+.settingsRow{
+  padding:12px 16px 16px;
+  display:flex;
+  gap:10px;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+}
+.setting{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  min-width: 180px;
+}
+.setting label{
+  font-size:12px;
+  color:var(--muted);
+  font-weight:650;
+}
+input{
+  width:92px;
+  border-radius:16px;
+  padding:8px 10px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.10);
+  color:var(--text);
+  box-shadow:var(--inner);
+  outline:none;
+  font-weight:560;
+}
+.stat{
+  display:flex;
+  align-items:baseline;
+  gap:10px;
+}
+.stat .k{ font-size:12px; color:var(--muted); font-weight:650; }
+.stat .v{ font-weight:650; }
+
+/* RIGHT: two equal cards */
+.rightCol{
+  display:grid;
+  grid-template-rows: 1fr 1fr;
+  gap:14px;
+  height:100%;
+}
+
+/* Iris note */
+.notePaper{
+  margin-top:10px;
+  border-radius:var(--radiusM);
+  background:linear-gradient(180deg, rgba(255,253,247,.92), rgba(255,255,255,.40));
+  border:1px dashed rgba(125,140,255,.28);
+  box-shadow:var(--shadow2);
+  padding:14px 14px;
+  transform: rotate(-.6deg);
+}
+[data-theme="dark"] .notePaper{ background:rgba(255,255,255,.06); transform:none; }
+.noteMain{
+  font-size:15px;
+  font-weight:600;
+  text-align:center;
+  padding:8px 6px;
+}
+.noteSrc{
+  font-size:12px;
+  color:var(--muted);
+  text-align:right;
+  margin-top:6px;
+}
+.noteActions{
+  margin-top:12px;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+/* Mood diary */
+.diaryTop{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-top:4px;
+}
+.datePill{
+  font-size:12px;
+  color:var(--muted);
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.10);
+  padding:6px 10px;
+  border-radius:999px;
+  box-shadow:var(--inner);
+}
+.stickers{
+  margin-top:12px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+}
+.sticker{
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.10);
+  border-radius:999px;
+  padding:8px 10px;
+  cursor:pointer;
+  box-shadow:var(--inner);
+  transition:.15s;
+  user-select:none;
+  font-weight:560;
+  font-size:13px;
+}
+.sticker:active{ transform:translateY(2px) scale(.98); }
+.sticker.on{
+  border-color: rgba(125,140,255,.36);
+  background: linear-gradient(180deg, rgba(125,140,255,.18), rgba(125,140,255,.08));
+}
+.selectedLine{
+  margin-top:12px;
+  border-top:1px dashed rgba(125,140,255,.22);
+  padding-top:10px;
+  font-size:12px;
+  color:var(--muted);
+}
+.selectedBadges{
+  margin-top:8px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.badge{
+  border-radius:999px;
+  padding:6px 10px;
+  border:1px solid rgba(125,140,255,.22);
+  background:rgba(125,140,255,.08);
+  font-size:12px;
+  color:var(--text);
+  box-shadow:var(--inner);
+}
+
+/* bubble */
+.bubble{
+  position:fixed;
+  bottom:16px;
+  right:16px;
+  width:min(360px, 92vw);
+  background:linear-gradient(180deg, var(--card), rgba(255,255,255,.04));
+  border-radius:22px;
+  padding:14px;
+  border:1px solid var(--border);
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(10px);
+  display:none;
+  z-index:50;
+}
+.bubble.show{ display:block; }
+.bubble .quote{ font-size:14px; font-weight:560; line-height:1.55; color:var(--text); }
+.bubble .small{ margin-top:6px; font-size:12px; color:var(--muted); }
+
+/* modal */
+.overlay{
+  position:fixed; inset:0;
+  background:rgba(0,0,0,.35);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  z-index:60;
+}
+.overlay.show{ display:flex; }
+.modal{
+  width:min(820px, 96vw);
+  background:linear-gradient(180deg, var(--card), rgba(255,255,255,.04));
+  border:1px solid var(--border);
+  border-radius:28px;
+  box-shadow:var(--shadow);
+  padding:16px;
+  backdrop-filter:blur(14px);
+}
+.modalTop{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:flex-start;
+}
+.modalTop .ttl{ font-weight:650; }
+.modalTop .sub{ color:var(--muted); font-size:12px; margin-top:4px; }
+.closeX{
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.10);
+  border-radius:999px;
+  padding:8px 10px;
+  cursor:pointer;
+  box-shadow: var(--inner);
+  font-weight:650;
+  color:var(--text);
+}
+.reader{
+  margin-top:12px;
+  border-radius:22px;
+  border:1px solid var(--border);
+  overflow:hidden;
+  background:rgba(255,255,255,.06);
+}
+.reader iframe{
+  width:100%;
+  height:min(72vh, 600px);
+  border:0;
+}
+.readerText{
+  padding:14px;
+  line-height:1.8;
+  font-weight:520;
+  color:var(--text);
+  max-height:min(72vh, 600px);
+  overflow:auto;
+}
+.list{
+  margin-top:12px;
+  display:grid;
+  gap:10px;
+}
+.item{
+  padding:12px;
+  border:1px solid var(--border);
+  border-radius:18px;
+  background:rgba(255,255,255,.08);
+  cursor:pointer;
+  box-shadow:var(--inner);
+}
+.item .p{ font-weight:650; }
+.item .s{ margin-top:4px; font-size:12px; color:var(--muted); }
+</style>
+</head>
+
+<body>
+<div class="grain"></div>
+
+<div class="shell">
+
+  <!-- LEFT -->
+  <div class="card leftCard">
+    <div class="pad">
+      <div class="header">
+        <div>
+          <h1 class="hTitle">拉文克劳休息室</h1>
+          <div class="hSub">属于你的小世界</div>
+        </div>
+        <div class="iconRow">
+          <button class="iconBtn" id="themeBtn" title="深色模式">🌓</button>
+          <button class="iconBtn" id="shelfBtn" title="书架">📚</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="leftBody">
+      <div class="ringWrap">
+        <div class="ring">
+          <div class="glow"></div>
+          <svg viewBox="0 0 100 100">
+            <defs>
+              <linearGradient id="grad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="var(--iris)"/>
+                <stop offset="100%" stop-color="var(--mint)"/>
+              </linearGradient>
+            </defs>
+            <circle cx="50" cy="50" r="42" stroke="rgba(0,0,0,.10)" stroke-width="10" fill="none"/>
+            <circle id="progress" cx="50" cy="50" r="42"
+              stroke="url(#grad)" stroke-width="10" fill="none"
+              stroke-linecap="round"
+              stroke-dasharray="263.89"
+              stroke-dashoffset="0"/>
+          </svg>
+          <div class="time" id="timeText">25:00</div>
+        </div>
+
+        <div class="controls">
+          <button class="btn" id="toggleBtn">开始</button>
+          <button class="btn secondary" id="oneLineBtn">一句话</button>
+        </div>
+
+        <div class="focusQuote">
+          <div class="fqTop">
+            <div class="fqMark">🦋</div>
+            <div class="fqLabel">专注语</div>
+          </div>
+          <div class="fqText" id="focusQuoteText">准备好了就开始吧。你只需要先走一步。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="settingsRow">
+      <div class="setting">
+        <label>专注</label>
+        <input id="focusMin" type="number" value="25" min="1" />
+        <span class="hSub">分钟</span>
+      </div>
+
+      <div class="setting">
+        <label>休息</label>
+        <input id="breakMin" type="number" value="5" min="1" />
+        <span class="hSub">分钟</span>
+      </div>
+
+      <div class="stat">
+        <span class="k">番茄</span>
+        <span class="v" id="count">0</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="rightCol">
+
+    <!-- Iris note -->
+    <div class="card">
+      <div class="pad">
+        <div class="header">
+          <div>
+            <h1 class="hTitle">今日鸢尾便签</h1>
+            <div class="hSub" id="noteMeta">—</div>
+          </div>
+          <div class="iconRow">
+            <button class="iconBtn" id="openInboxBtn" title="信箱">✉️</button>
+          </div>
+        </div>
+
+        <div class="notePaper">
+          <div class="noteMain" id="noteMain">“先把自己照顾好，世界才有意义。”</div>
+          <div class="noteSrc" id="noteSrc">——（出处占位）</div>
+        </div>
+
+        <div class="noteActions">
+          <button class="btn secondary" id="saveNoteBtn">收下</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mood diary -->
+    <div class="card">
+      <div class="pad">
+        <div class="header">
+          <div>
+            <h1 class="hTitle">今日心情</h1>
+            <div class="hSub">像贴纸一样记录</div>
+          </div>
+          <div class="iconRow">
+            <div class="datePill" id="todayPill">—</div>
+            <button class="iconBtn" id="moodCalendarBtn" title="心情日历">📅</button>
+          </div>
+        </div>
+
+        <div class="stickers" id="stickers"></div>
+
+        <div class="selectedLine">已选：</div>
+        <div class="selectedBadges" id="selectedBadges"></div>
+
+        <div class="hSub" style="margin-top:10px;">你可以随时修改到舒服为止。</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Bubble -->
+<div class="bubble" id="bubble">
+  <div class="quote" id="bubbleText"></div>
+  <div class="small" id="bubbleSmall"></div>
+</div>
+
+<!-- Modal -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <div class="modalTop">
+      <div>
+        <div class="ttl" id="modalTitle">—</div>
+        <div class="sub" id="modalSub">—</div>
+      </div>
+      <button class="closeX" id="closeX">✕</button>
+    </div>
+
+    <div class="reader" id="readerFrameWrap" style="display:none;">
+      <iframe id="readerFrame" src=""></iframe>
+    </div>
+
+    <div class="readerText" id="readerText" style="display:none;"></div>
+
+    <div class="list" id="modalList" style="display:none;"></div>
+  </div>
+</div>
+
+<script>
+/* helpers */
+const root = document.documentElement;
+function todayStr(){
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+}
+function showBubble(text, small=""){
+  const b = document.getElementById("bubble");
+  document.getElementById("bubbleText").textContent = text;
+  document.getElementById("bubbleSmall").textContent = small;
+  b.classList.add("show");
+  clearTimeout(showBubble._t);
+  showBubble._t = setTimeout(()=>b.classList.remove("show"), 4200);
+}
+
+/* theme */
+const savedTheme = localStorage.getItem("raven_theme_v21");
+if(savedTheme) root.setAttribute("data-theme", savedTheme);
+document.getElementById("themeBtn").onclick = () => {
+  const cur = root.getAttribute("data-theme");
+  const next = (cur === "dark") ? "" : "dark";
+  if(next) root.setAttribute("data-theme", next);
+  else root.removeAttribute("data-theme");
+  localStorage.setItem("raven_theme_v21", next);
+  showBubble(next ? "深色模式已开启。" : "浅色模式回来啦。");
+};
+
+/* focus quotes */
+const focusPools = [
+  { id:"cathy", tag:"", lines:["把今天拆成一小段一小段。","你不需要完美，你只需要继续。","先把这一分钟稳住。"]},
+  { id:"blaise", tag:"Blaise", lines:["开始。不要等状态。","只做下一步。","专注。其余都先放下。"]},
+  { id:"sarah", tag:"Sarah", lines:["慢一点也没关系。","先呼吸，再动笔。","你会在完成里找到安静。"]},
+  { id:"noah", tag:"Noah", lines:["五分钟就行。","别跟脑子吵，先动起来。","先做一小块，赢回来。"]},
+];
+function pickFocusQuote(){
+  const p = focusPools[Math.floor(Math.random()*focusPools.length)];
+  const t = p.lines[Math.floor(Math.random()*p.lines.length)];
+  return p.tag ? `「${t}」 · ${p.tag}` : `「${t}」`;
+}
+const focusQuoteText = document.getElementById("focusQuoteText");
+
+/* pomodoro */
+let running=false;
+let leftSec=25*60, totalSec=25*60;
+let timer=null;
+let tomatoes=parseInt(localStorage.getItem("raven_tomatoes_v21")||"0",10);
+
+const timeText=document.getElementById("timeText");
+const progress=document.getElementById("progress");
+const countEl=document.getElementById("count");
+const focusMinEl=document.getElementById("focusMin");
+const breakMinEl=document.getElementById("breakMin");
+
+countEl.textContent=tomatoes;
+const CIRC=2*Math.PI*42;
+
+function fmt(s){
+  const m=String(Math.floor(s/60)).padStart(2,"0");
+  const ss=String(s%60).padStart(2,"0");
+  return `${m}:${ss}`;
+}
+function renderTimer(){
+  timeText.textContent=fmt(leftSec);
+  const ratio=leftSec/totalSec;
+  progress.style.strokeDasharray=`${CIRC.toFixed(2)}`;
+  progress.style.strokeDashoffset=`${(CIRC*(1-ratio)).toFixed(2)}`;
+  countEl.textContent=String(tomatoes);
+}
+function resetTimer(){
+  const f=Math.max(1, parseInt(focusMinEl.value||"25",10));
+  totalSec=f*60;
+  leftSec=totalSec;
+  renderTimer();
+}
+resetTimer();
+
+function refreshFocusQuote(){
+  focusQuoteText.textContent = pickFocusQuote();
+}
+
+document.getElementById("toggleBtn").onclick=()=>{
+  running=!running;
+  document.getElementById("toggleBtn").textContent=running?"暂停":"开始";
+
+  if(running){
+    refreshFocusQuote();
+    showBubble("开始吧。","专注语已就位。");
+    timer=setInterval(()=>{
+      leftSec=Math.max(0,leftSec-1);
+      renderTimer();
+      if(leftSec===0){
+        running=false;
+        clearInterval(timer);
+        document.getElementById("toggleBtn").textContent="开始";
+        tomatoes+=1;
+        localStorage.setItem("raven_tomatoes_v21", String(tomatoes));
+        showBubble("🍅 完成一段。","下一次开始会刷新新的专注语。");
+        resetTimer();
+      }
+    },1000);
+  }else{
+    clearInterval(timer);
+  }
+};
+document.getElementById("oneLineBtn").onclick=()=> showBubble(pickFocusQuote());
+
+/* Iris note: unsigned main + source (placeholder for now) */
+const IRIS_NOTES = [
+  { text:"把自己照顾好，是一种力量。", src:"（出处：待补）" },
+  { text:"我允许自己慢一点，但不后退。", src:"（出处：待补）" },
+];
+const NOTE_KEYS = { today:"raven_iris_note_today_v21", date:"raven_iris_note_date_v21", inbox:"raven_iris_note_inbox_v21" };
+
+function buildTodayNote(){
+  const date=todayStr();
+  const cached=localStorage.getItem(NOTE_KEYS.today);
+  const cachedDate=localStorage.getItem(NOTE_KEYS.date);
+  if(cached && cachedDate===date) return JSON.parse(cached);
+  const pick=IRIS_NOTES[Math.floor(Math.random()*IRIS_NOTES.length)];
+  const note={ date, text:pick.text, src:pick.src, saved:false };
+  localStorage.setItem(NOTE_KEYS.today, JSON.stringify(note));
+  localStorage.setItem(NOTE_KEYS.date, date);
+  return note;
+}
+function loadNoteInbox(){
+  try{ return JSON.parse(localStorage.getItem(NOTE_KEYS.inbox) || "[]"); }catch{ return []; }
+}
+function saveNoteToInbox(note){
+  const inbox = loadNoteInbox();
+  if(!inbox.some(x=>x.date===note.date)) inbox.unshift(note);
+  localStorage.setItem(NOTE_KEYS.inbox, JSON.stringify(inbox));
+  return inbox;
+}
+let todayNote=buildTodayNote();
+const noteMain=document.getElementById("noteMain");
+const noteSrc=document.getElementById("noteSrc");
+const noteMeta=document.getElementById("noteMeta");
+
+function renderNote(){
+  noteMain.textContent=`“${todayNote.text}”`;
+  noteSrc.textContent=`—— ${todayNote.src}`;
+  noteMeta.textContent = `${todayNote.saved ? "已收下" : "未收下"} · ${todayNote.date}`;
+}
+renderNote();
+
+document.getElementById("saveNoteBtn").onclick=()=>{
+  todayNote.saved=true;
+  localStorage.setItem(NOTE_KEYS.today, JSON.stringify(todayNote));
+  saveNoteToInbox(todayNote);
+  renderNote();
+  showBubble("已收进信箱。");
+};
+
+/* modal system */
+const overlay=document.getElementById("overlay");
+const closeX=document.getElementById("closeX");
+const modalTitle=document.getElementById("modalTitle");
+const modalSub=document.getElementById("modalSub");
+const readerFrameWrap=document.getElementById("readerFrameWrap");
+const readerFrame=document.getElementById("readerFrame");
+const readerText=document.getElementById("readerText");
+const modalList=document.getElementById("modalList");
+
+function openModal(){ overlay.classList.add("show"); }
+function closeModal(){
+  overlay.classList.remove("show");
+  readerFrameWrap.style.display="none";
+  readerText.style.display="none";
+  modalList.style.display="none";
+  readerFrame.src="";
+  readerText.textContent="";
+  modalList.innerHTML="";
+}
+closeX.onclick=closeModal;
+overlay.addEventListener("click",(e)=>{ if(e.target===overlay) closeModal(); });
+
+function openReader({title, sub, file, text}){
+  modalTitle.textContent=title;
+  modalSub.textContent=sub||"";
+  openModal();
+  if(file){
+    readerFrameWrap.style.display="block";
+    readerFrame.src=file;
+  }else{
+    readerText.style.display="block";
+    readerText.textContent=text||"";
+  }
+}
+function openList({title, sub, items, onClick}){
+  modalTitle.textContent=title;
+  modalSub.textContent=sub||"";
+  openModal();
+  modalList.style.display="block";
+  modalList.innerHTML="";
+  items.forEach((it, idx)=>{
+    const row=document.createElement("div");
+    row.className="item";
+    row.innerHTML=`<div class="p">${it.primary}</div><div class="s">${it.secondary||""}</div>`;
+    row.onclick=()=>onClick(it, idx);
+    modalList.appendChild(row);
+  });
+}
+
+/* inbox */
+function openNoteInbox(){
+  const inbox=loadNoteInbox();
+  if(inbox.length===0){
+    openList({
+      title:"信箱",
+      sub:"这里会保存你收下的每一张鸢尾便签。",
+      items:[{ primary:"还没有收藏", secondary:"点「收下」就会存进来。" }],
+      onClick:()=>{}
+    });
+    return;
+  }
+  openList({
+    title:"信箱",
+    sub:"按日期回看",
+    items: inbox.map(n=>({
+      primary:`${n.date} · 鸢尾便签`,
+      secondary:`“${n.text}”  —— ${n.src}`
+    })),
+    onClick:(it, idx)=>{
+      const n=inbox[idx];
+      openReader({ title:`鸢尾便签 · ${n.date}`, sub:n.src, text:`“${n.text}”\n\n—— ${n.src}` });
+    }
+  });
+}
+document.getElementById("openInboxBtn").onclick=openNoteInbox;
+
+/* mood diary with calendar storage */
+document.getElementById("todayPill").textContent=todayStr();
+
+const MOOD_TODAY_KEY="raven_mood_today_v21";      // {date, picks:[]}
+const MOOD_ARCHIVE_KEY="raven_mood_archive_v21";  // { [date]: picks[] }
+const MOODS=[
+  { id:"happy", emoji:"🙂", label:"开心" },
+  { id:"sad", emoji:"😞", label:"难过" },
+  { id:"anx", emoji:"😟", label:"焦虑" },
+  { id:"calm", emoji:"🌤️", label:"平静" },
+  { id:"tired", emoji:"😴", label:"疲惫" },
+  { id:"spark", emoji:"💫", label:"期待" },
+  { id:"low", emoji:"🌧️", label:"低落" },
+  { id:"drive", emoji:"🔥", label:"有干劲" },
+  { id:"think", emoji:"💭", label:"想太多" },
+];
+
+function loadMoodToday(){
+  const raw=localStorage.getItem(MOOD_TODAY_KEY);
+  if(!raw) return { date: todayStr(), picks: [] };
+  try{
+    const obj=JSON.parse(raw);
+    if(obj.date!==todayStr()) return { date: todayStr(), picks: [] };
+    return obj;
+  }catch{ return { date: todayStr(), picks: [] }; }
+}
+function saveMoodToday(obj){
+  localStorage.setItem(MOOD_TODAY_KEY, JSON.stringify(obj));
+}
+function loadArchive(){
+  try{ return JSON.parse(localStorage.getItem(MOOD_ARCHIVE_KEY) || "{}"); }
+  catch{ return {}; }
+}
+function saveArchive(arc){
+  localStorage.setItem(MOOD_ARCHIVE_KEY, JSON.stringify(arc));
+}
+function upsertArchive(date, picks){
+  const arc=loadArchive();
+  arc[date]=picks;
+  saveArchive(arc);
+}
+
+let moodState=loadMoodToday();
+const stickersEl=document.getElementById("stickers");
+const selectedBadges=document.getElementById("selectedBadges");
+
+function moodLabel(id){
+  const m=MOODS.find(x=>x.id===id);
+  return m ? `${m.emoji} ${m.label}` : id;
+}
+
+function renderMood(){
+  stickersEl.innerHTML="";
+  selectedBadges.innerHTML="";
+
+  MOODS.forEach(m=>{
+    const on=moodState.picks.includes(m.id);
+    const btn=document.createElement("div");
+    btn.className="sticker"+(on?" on":"");
+    btn.textContent=`${m.emoji} ${m.label}`;
+    btn.onclick=()=>{
+      const idx=moodState.picks.indexOf(m.id);
+      if(idx>=0) moodState.picks.splice(idx,1);
+      else moodState.picks.push(m.id);
+
+      saveMoodToday(moodState);
+      upsertArchive(moodState.date, moodState.picks);
+
+      renderMood();
+      const names=moodState.picks.map(moodLabel);
+      showBubble("已更新今日心情。", names.length ? names.join(" · ") : "（今天先空着也可以）");
+    };
+    stickersEl.appendChild(btn);
+  });
+
+  if(moodState.picks.length===0){
+    const b=document.createElement("div");
+    b.className="badge";
+    b.textContent="（今天先空着也可以）";
+    selectedBadges.appendChild(b);
+    return;
+  }
+  moodState.picks.forEach(id=>{
+    const chip=document.createElement("div");
+    chip.className="badge";
+    chip.textContent=moodLabel(id);
+    selectedBadges.appendChild(chip);
+  });
+}
+renderMood();
+
+/* mood calendar modal */
+document.getElementById("moodCalendarBtn").onclick=()=>{
+  const arc=loadArchive();
+  const dates=Object.keys(arc).sort((a,b)=>b.localeCompare(a)); // newest first
+  if(dates.length===0){
+    openList({
+      title:"心情日历",
+      sub:"你还没有保存任何一天的记录。",
+      items:[{primary:"空空的也没关系", secondary:"从今天开始慢慢积累。"}],
+      onClick:()=>{}
+    });
+    return;
+  }
+  openList({
+    title:"心情日历",
+    sub:"点一天查看当日贴纸",
+    items: dates.map(d=>{
+      const picks=arc[d] || [];
+      const preview = picks.slice(0,4).map(moodLabel).join(" · ") + (picks.length>4 ? " …" : "");
+      return { primary:d, secondary: preview || "（空）" };
+    }),
+    onClick:(it, idx)=>{
+      const d=dates[idx];
+      const picks=arc[d] || [];
+      const detail = picks.length ? picks.map(moodLabel).join(" · ") : "（那天你什么都没选，也很正常）";
+      openReader({ title:`心情记录 · ${d}`, sub:"", text: detail });
+    }
+  });
+};
+
+/* Night reminder 21:30 */
+const NIGHT_REMINDER = { hh:21, mm:30, key:"raven_night_reminded_date_v21" };
+function isAfterNightTime(){
+  const now=new Date();
+  const target=new Date();
+  target.setHours(NIGHT_REMINDER.hh, NIGHT_REMINDER.mm, 0, 0);
+  return now>=target;
+}
+function maybeShowNightReminder(){
+  const date=todayStr();
+  if(localStorage.getItem(NIGHT_REMINDER.key)===date) return;
+  if(!isAfterNightTime()) return;
+  localStorage.setItem(NIGHT_REMINDER.key, date);
+  showBubble("🦉 夜色已深。今天到这里就好。","身体比进度更重要。");
+}
+maybeShowNightReminder();
+setInterval(maybeShowNightReminder, 60*1000);
+
+/* Shelf */
+const FANFICS = [
+  { title:"密语", meta:"C&B · 2025 生贺", file:"fanfic/密语.pdf" },
+  { title:"北国之旅", meta:"Christmas Special · 2024", file:"fanfic/北国之旅.pdf" },
+];
+const SKITS = [
+  // { mmdd:"05-20", label:"520", year:2025, file:"skits/2025-05-20-520.html" },
+];
+
+function openShelf(){
+  openList({
+    title:"拉文克劳书架",
+    sub:"同人文 · 小剧场",
+    items:[
+      { primary:`同人文`, secondary:`共 ${FANFICS.length} 篇` },
+      { primary:`小剧场`, secondary:`共 ${SKITS.length} 条` },
+    ],
+    onClick:(it)=>{
+      if(it.primary==="同人文") openFanficShelf();
+      if(it.primary==="小剧场") openSkitShelf();
+    }
+  });
+}
+function openFanficShelf(){
+  openList({
+    title:"同人文",
+    sub:"点标题阅读",
+    items: FANFICS.map(f=>({ primary:f.title, secondary:f.meta || f.file })),
+    onClick:(it, idx)=>{
+      const f=FANFICS[idx];
+      openReader({ title:f.title, sub:f.meta, file:f.file });
+    }
+  });
+}
+function openSkitShelf(){
+  if(SKITS.length===0){
+    openList({
+      title:"小剧场",
+      sub:"你还没添加条目。",
+      items:[{ primary:"添加后就能点开阅读", secondary:"把 html 放进 skits/ 并在代码里登记即可。" }],
+      onClick:()=>{}
+    });
+    return;
+  }
+  openList({
+    title:"小剧场",
+    sub:"点开阅读",
+    items: SKITS.map(s=>({ primary:`${s.mmdd} · ${s.label}`, secondary:`${s.year} · ${s.file}` })),
+    onClick:(it, idx)=>{
+      const s=SKITS[idx];
+      openReader({ title:`小剧场 · ${s.label}`, sub:`${s.year}-${s.mmdd}`, file:s.file });
+    }
+  });
+}
+document.getElementById("shelfBtn").onclick=openShelf;
+
+/* hello */
+refreshFocusQuote();
+showBubble("欢迎回到拉文克劳休息室。","属于你的小世界。");
+</script>
+
+</body>
+</html>
