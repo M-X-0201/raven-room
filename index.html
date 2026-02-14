@@ -463,6 +463,84 @@ input{
 }
 .item .p{ font-weight:650; }
 .item .s{ margin-top:4px; font-size:12px; color:var(--muted); }
+/* 1. 书架内容滚动条 */
+.rightCol .card {
+  overflow-y: auto;
+  max-height: 450px;  /* 设置最大高度，超出部分可滚动 */
+  padding: 10px;  /* 加点内边距，避免内容紧贴边缘 */
+}
+
+/* 2. 手机端适配：书架显示方式调整 */
+@media (max-width: 768px) {
+  .shell {
+    max-width: 100%; /* 自适应屏幕宽度 */
+    gap: 10px;       /* 更紧凑的布局 */
+    flex-direction: column; /* 让左右布局变成上下布局 */
+  }
+
+  .rightCol {
+    display: block;
+    padding: 0 10px;
+  }
+
+  .rightCol .card {
+    margin-bottom: 10px;  /* 每个卡片之间有间隔 */
+  }
+
+  .notePaper {
+    font-size: 14px; /* 字体大小适应手机屏幕 */
+    padding: 10px;
+  }
+}
+
+/* 3. 自动跟随系统亮/暗模式 */
+@media (prefers-color-scheme: dark) {
+  /* 夜间模式 */
+  :root {
+    --bg1: #121212;  /* 深色背景 */
+    --bg2: #1e1e1e;  /* 更暗背景 */
+    --card: rgba(255, 255, 255, 0.10);  /* 卡片背景 */
+    --text: #f2f3ff;  /* 文字颜色 */
+    --muted: #9aa0c6;
+  }
+
+  .bubble {
+    background: linear-gradient(180deg, var(--card), rgba(255,255,255,.04));
+  }
+
+  .notePaper {
+    background: rgba(255,255,255,.06);
+  }
+
+  .focusQuote {
+    background: linear-gradient(180deg, rgba(255,253,247,.82), rgba(255,255,255,.22));
+    border: 1px dashed rgba(125,140,255,.28);
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  /* 白天模式 */
+  :root {
+    --bg1: #fbfbff;  /* 浅色背景 */
+    --bg2: #f3f5ff;  /* 更浅背景 */
+    --card: rgba(255, 255, 255, .70);  /* 卡片背景 */
+    --text: #2b2f45;  /* 文字颜色 */
+    --muted: #7a7f9f;
+  }
+
+  .bubble {
+    background: linear-gradient(180deg, var(--card), rgba(255,255,255,.04));
+  }
+
+  .notePaper {
+    background: linear-gradient(180deg, rgba(255,253,247,.92), rgba(255,255,255,.40));
+  }
+
+  .focusQuote {
+    background: linear-gradient(180deg, rgba(255,253,247,.82), rgba(255,255,255,.22));
+    border: 1px dashed rgba(125,140,255,.28);
+  }
+}
 </style>
 </head>
 
@@ -1055,4 +1133,5 @@ showBubble("欢迎回到拉文克劳休息室。","属于你的小世界。");
 
 </body>
 </html>
+
 
