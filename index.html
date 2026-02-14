@@ -463,37 +463,15 @@ input{
 }
 .item .p{ font-weight:650; }
 .item .s{ margin-top:4px; font-size:12px; color:var(--muted); }
-/* 1. 书架内容滚动条 */
+/* 1. 书架内容滚动条（确保内容超过最大高度时有滚动条） */
 .rightCol .card {
   overflow-y: auto;
-  max-height: 450px;  /* 设置最大高度，超出部分可滚动 */
-  padding: 10px;  /* 加点内边距，避免内容紧贴边缘 */
+  max-height: 350px;  /* 设置最大高度，超出部分可滚动 */
+  padding: 10px;  /* 添加内边距，避免内容紧贴边缘 */
+  border-radius: var(--radiusM);  /* 如果没有圆角，添加圆角 */
 }
 
-/* 2. 手机端适配：书架显示方式调整 */
-@media (max-width: 768px) {
-  .shell {
-    max-width: 100%; /* 自适应屏幕宽度 */
-    gap: 10px;       /* 更紧凑的布局 */
-    flex-direction: column; /* 让左右布局变成上下布局 */
-  }
-
-  .rightCol {
-    display: block;
-    padding: 0 10px;
-  }
-
-  .rightCol .card {
-    margin-bottom: 10px;  /* 每个卡片之间有间隔 */
-  }
-
-  .notePaper {
-    font-size: 14px; /* 字体大小适应手机屏幕 */
-    padding: 10px;
-  }
-}
-
-/* 3. 自动跟随系统亮/暗模式 */
+/* 2. 自动跟随系统亮/暗模式 */
 @media (prefers-color-scheme: dark) {
   /* 夜间模式 */
   :root {
@@ -1133,5 +1111,6 @@ showBubble("欢迎回到拉文克劳休息室。","属于你的小世界。");
 
 </body>
 </html>
+
 
 
