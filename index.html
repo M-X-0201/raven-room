@@ -3,931 +3,1092 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>拉文克劳休息室</title>
+<title>拉文克劳休息室 | Cathy's Iris Garden</title>
 
 <style>
-:root{
-  --bg1:#fbfbff;
-  --bg2:#f3f5ff;
-  --card:rgba(255,255,255,.70);
-  --text:#2b2f45;
-  --muted:#7a7f9f;
-  --iris:#7d8cff;
-  --iris2:#a7b2ff;
-  --mint:#9de7de;
-
-  --radiusL:36px;
-  --radiusM:26px;
-  --radiusS:20px;
-
-  --shadow:0 18px 55px rgba(40,50,90,.10);
-  --shadow2:0 10px 26px rgba(40,50,90,.08);
-  --border:rgba(70,80,130,.12);
-  --inner: inset 0 1px 0 rgba(255,255,255,.7);
+:root {
+  --iris-blue: #5D76CB;
+  --iris-purple: #9A9AE0;
+  --iris-soft: #E6E6FA;
+  --bg-light: #FBFBFE;
+  --text-main: #3D3D63;
+  --text-sub: #7D7DA3;
+  --card-shadow: 0 15px 45px rgba(93, 118, 203, 0.12);
+  --radius-l: 36px;
+  --radius-m: 22px;
+  --iris-medium: #7A7AD0;
+  --border-line: rgba(93, 118, 203, 0.15);
 }
 
-[data-theme="dark"]{
-  --bg1:#0f1326;
-  --bg2:#11183a;
-  --card:rgba(255,255,255,.10);
-  --text:#f2f3ff;
-  --muted:#a7add6;
-
-  --shadow:0 22px 70px rgba(0,0,0,.45);
-  --shadow2:0 14px 36px rgba(0,0,0,.35);
-  --border:rgba(255,255,255,.14);
-  --inner: inset 0 1px 0 rgba(255,255,255,.12);
-}
-
-*{ box-sizing:border-box; }
-body{
-  margin:0;
-  font-family:system-ui,-apple-system,"PingFang SC","Microsoft YaHei";
-  color:var(--text);
-  background:
-    radial-gradient(900px 600px at 18% 14%, rgba(125,140,255,.16), transparent 62%),
-    radial-gradient(900px 600px at 82% 18%, rgba(157,231,222,.10), transparent 62%),
-    linear-gradient(180deg,var(--bg1),var(--bg2));
-  min-height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  padding:14px;
-  letter-spacing:.3px;
-  line-height:1.7;
-}
-
-/* 桌面端：强制一屏，不滚动。手机端允许自然滚动 */
-@media(min-width:941px){
-  body{ overflow:hidden; }
-}
-
-.grain{
-  position:fixed; inset:0;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='.10'/%3E%3C/svg%3E");
-  mix-blend-mode:overlay;
-  opacity:.55;
-  pointer-events:none;
-}
-[data-theme="dark"] .grain{ opacity:.30; }
-
-.shell{
-  width:980px;
-  max-width:95vw;
-  display:grid;
-  grid-template-columns: 1.08fr .92fr;
-  gap:14px;
-}
-
-/* 桌面端卡片高度压进一屏 */
-@media(min-width:941px){
-  .shell{
-    height: calc(100vh - 28px);
-  }
-}
-
-@media(max-width:940px){
-  body{ align-items:flex-start; }
-  .shell{ grid-template-columns:1fr; height:auto; }
-}
-
-.card{
-  border:1px solid var(--border);
-  border-radius:var(--radiusL);
-  background:linear-gradient(180deg, var(--card), rgba(255,255,255,.04));
-  box-shadow:var(--shadow);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  overflow:hidden;
-}
-
-.pad{ padding:16px; }
-
-.header{
-  display:flex;
-  justify-content:space-between;
-  gap:12px;
-  align-items:flex-start;
-}
-.hTitle{
-  font-size:18px;
-  font-weight:650;
-  margin:0;
-}
-.hSub{
-  font-size:12px;
-  color:var(--muted);
-  margin-top:4px;
-}
-
-.iconRow{ display:flex; gap:10px; align-items:center; }
-.iconBtn{
-  border:1px solid var(--border);
-  background:rgba(255,255,255,.10);
-  color:var(--text);
-  border-radius:999px;
-  padding:10px 12px;
-  cursor:pointer;
-  box-shadow:var(--inner);
-  transition:.15s;
-  user-select:none;
-}
-.iconBtn:active{ transform:translateY(2px) scale(.98); }
-
-/* LEFT */
-.leftCard{
-  display:grid;
-  grid-template-rows: auto 1fr auto; /* header / body / bottom */
-  height:100%;
-}
-
-.leftBody{
-  display:grid;
-  grid-template-rows: auto auto auto; /* ring / quote / controls */
-  align-content:start;
-  padding: 6px 0 0;
-}
-
-.ringWrap{ display:grid; place-items:center; padding-top:2px; }
-
-.ring{
-  width:252px;height:252px; /* smaller to fit */
-  position:relative;
-  display:grid;
-  place-items:center;
-}
-@media(max-width:400px){
-  .ring{ width:220px;height:220px; }
-}
-
-.glow{
-  position:absolute;
-  inset:-14px;
-  border-radius:50%;
-  background:
-    radial-gradient(circle at 32% 30%, rgba(125,140,255,.20), transparent 62%),
-    radial-gradient(circle at 72% 62%, rgba(157,231,222,.10), transparent 62%),
-    radial-gradient(circle at 40% 84%, rgba(167,178,255,.12), transparent 62%);
-  filter:blur(18px);
-  animation:breathe 2.9s ease-in-out infinite;
-}
-@keyframes breathe{
-  0%,100%{ transform:scale(.985); opacity:.78; }
-  50%{ transform:scale(1.03); opacity:1; }
-}
-
-.ring svg{ transform:rotate(-90deg); filter: drop-shadow(0 14px 26px rgba(0,0,0,.10)); }
-.time{
-  position:absolute;
-  inset:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:44px;
-  font-weight:640;
-  letter-spacing:1px;
-}
-
-.controls{
-  text-align:center;
-  margin-top:4px;
-}
-.btn{
-  border:none;
-  border-radius:999px;
-  padding:9px 14px; /* slightly smaller */
-  margin:6px;
-  font-weight:650;
-  cursor:pointer;
-  color:var(--text);
-  background:linear-gradient(180deg, rgba(125,140,255,.20), rgba(125,140,255,.08));
-  box-shadow:var(--shadow2), var(--inner);
-  transition:.15s;
-  user-select:none;
-}
-.btn.secondary{
-  background:linear-gradient(180deg, rgba(157,231,222,.14), rgba(157,231,222,.06));
-}
-.btn:active{ transform:translateY(2px) scale(.98); }
-
-.focusQuote{
-  margin:10px 16px 0;
-  border-radius:var(--radiusM);
-  background:linear-gradient(180deg, rgba(255,253,247,.82), rgba(255,255,255,.22));
-  border:1px dashed rgba(125,140,255,.28);
-  box-shadow:var(--shadow2);
-  padding:10px 12px;
-}
-[data-theme="dark"] .focusQuote{ background:rgba(255,255,255,.06); }
-.fqTop{ display:flex; align-items:center; gap:10px; margin-bottom:6px; }
-.fqMark{
-  width:30px;height:30px;
-  display:grid; place-items:center;
-  border-radius:12px;
-  border:1px solid rgba(125,140,255,.24);
-  background:rgba(125,140,255,.10);
-  box-shadow:var(--inner);
-  font-size:16px;
-}
-.fqLabel{ font-size:12px; color:var(--muted); font-weight:650; }
-.fqText{ font-size:14px; font-weight:560; }
-
-.settingsRow{
-  padding:12px 16px 16px;
-  display:flex;
-  gap:10px;
-  align-items:center;
-  justify-content:space-between;
-  flex-wrap:wrap;
-}
-.setting{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  min-width: 180px;
-}
-.setting label{
-  font-size:12px;
-  color:var(--muted);
-  font-weight:650;
-}
-input{
-  width:92px;
-  border-radius:16px;
-  padding:8px 10px;
-  border:1px solid var(--border);
-  background:rgba(255,255,255,.10);
-  color:var(--text);
-  box-shadow:var(--inner);
-  outline:none;
-  font-weight:560;
-}
-.stat{
-  display:flex;
-  align-items:baseline;
-  gap:10px;
-}
-.stat .k{ font-size:12px; color:var(--muted); font-weight:650; }
-.stat .v{ font-weight:650; }
-
-/* RIGHT: two equal cards */
-.rightCol{
-  display:grid;
-  grid-template-rows: 1fr 1fr;
-  gap:14px;
-  height:100%;
-}
-
-/* Iris note */
-.notePaper{
-  margin-top:10px;
-  border-radius:var(--radiusM);
-  background:linear-gradient(180deg, rgba(255,253,247,.92), rgba(255,255,255,.40));
-  border:1px dashed rgba(125,140,255,.28);
-  box-shadow:var(--shadow2);
-  padding:14px 14px;
-  transform: rotate(-.6deg);
-}
-[data-theme="dark"] .notePaper{ background:rgba(255,255,255,.06); transform:none; }
-.noteMain{
-  font-size:15px;
-  font-weight:600;
-  text-align:center;
-  padding:8px 6px;
-}
-.noteSrc{
-  font-size:12px;
-  color:var(--muted);
-  text-align:right;
-  margin-top:6px;
-}
-.noteActions{
-  margin-top:12px;
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-}
-
-/* Mood diary */
-.diaryTop{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-  margin-top:4px;
-}
-.datePill{
-  font-size:12px;
-  color:var(--muted);
-  border:1px solid var(--border);
-  background:rgba(255,255,255,.10);
-  padding:6px 10px;
-  border-radius:999px;
-  box-shadow:var(--inner);
-}
-.stickers{
-  margin-top:12px;
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-}
-.sticker{
-  border:1px solid var(--border);
-  background:rgba(255,255,255,.10);
-  border-radius:999px;
-  padding:8px 10px;
-  cursor:pointer;
-  box-shadow:var(--inner);
-  transition:.15s;
-  user-select:none;
-  font-weight:560;
-  font-size:13px;
-}
-.sticker:active{ transform:translateY(2px) scale(.98); }
-.sticker.on{
-  border-color: rgba(125,140,255,.36);
-  background: linear-gradient(180deg, rgba(125,140,255,.18), rgba(125,140,255,.08));
-}
-.selectedLine{
-  margin-top:12px;
-  border-top:1px dashed rgba(125,140,255,.22);
-  padding-top:10px;
-  font-size:12px;
-  color:var(--muted);
-}
-.selectedBadges{
-  margin-top:8px;
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-}
-.badge{
-  border-radius:999px;
-  padding:6px 10px;
-  border:1px solid rgba(125,140,255,.22);
-  background:rgba(125,140,255,.08);
-  font-size:12px;
-  color:var(--text);
-  box-shadow:var(--inner);
-}
-
-/* bubble */
-.bubble{
-  position:fixed;
-  bottom:16px;
-  right:16px;
-  width:min(360px, 92vw);
-  background:linear-gradient(180deg, var(--card), rgba(255,255,255,.04));
-  border-radius:22px;
-  padding:14px;
-  border:1px solid var(--border);
-  box-shadow:var(--shadow);
-  backdrop-filter:blur(10px);
-  display:none;
-  z-index:50;
-}
-.bubble.show{ display:block; }
-.bubble .quote{ font-size:14px; font-weight:560; line-height:1.55; color:var(--text); }
-.bubble .small{ margin-top:6px; font-size:12px; color:var(--muted); }
-
-/* modal */
-.overlay{
-  position:fixed; inset:0;
-  background:rgba(0,0,0,.35);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  padding:18px;
-  z-index:60;
-}
-.overlay.show{ display:flex; }
-.modal{
-  width:min(820px, 96vw);
-  background:linear-gradient(180deg, var(--card), rgba(255,255,255,.04));
-  border:1px solid var(--border);
-  border-radius:28px;
-  box-shadow:var(--shadow);
-  padding:16px;
-  backdrop-filter:blur(14px);
-}
-.modalTop{
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-  align-items:flex-start;
-}
-.modalTop .ttl{ font-weight:650; }
-.modalTop .sub{ color:var(--muted); font-size:12px; margin-top:4px; }
-.closeX{
-  border:1px solid var(--border);
-  background:rgba(255,255,255,.10);
-  border-radius:999px;
-  padding:8px 10px;
-  cursor:pointer;
-  box-shadow: var(--inner);
-  font-weight:650;
-  color:var(--text);
-}
-.reader{
-  margin-top:12px;
-  border-radius:22px;
-  border:1px solid var(--border);
-  overflow:hidden;
-  background:rgba(255,255,255,.06);
-}
-.reader iframe{
-  width:100%;
-  height:min(72vh, 600px);
-  border:0;
-}
-.readerText{
-  padding:14px;
-  line-height:1.8;
-  font-weight:520;
-  color:var(--text);
-  max-height:min(72vh, 600px);
-  overflow:auto;
-}
-.list{
-  margin-top:12px;
-  display:grid;
-  gap:10px;
-}
-.item{
-  padding:12px;
-  border:1px solid var(--border);
-  border-radius:18px;
-  background:rgba(255,255,255,.08);
-  cursor:pointer;
-  box-shadow:var(--inner);
-}
-.item .p{ font-weight:650; }
-.item .s{ margin-top:4px; font-size:12px; color:var(--muted); }
-
-/* 1. 书架内容滚动条 */
-.rightCol .card {
-  overflow-y: auto;
-  max-height: 450px;  /* 设置最大高度，超出部分可滚动 */
-  padding: 10px;  /* 加点内边距，避免内容紧贴边缘 */
-}
-
-/* 2. 手机端适配：书架显示方式调整 */
-@media (max-width: 768px) {
-  .shell {
-    max-width: 100%; /* 自适应屏幕宽度 */
-    gap: 10px;       /* 更紧凑的布局 */
-    flex-direction: column; /* 让左右布局变成上下布局 */
-  }
-
-  .rightCol {
-    display: block;
-    padding: 0 10px;
-  }
-
-  .rightCol .card {
-    margin-bottom: 10px;  /* 每个卡片之间有间隔 */
-  }
-
-  .notePaper {
-    font-size: 14px; /* 字体大小适应手机屏幕 */
-    padding: 10px;
-  }
-}
-
-/* 3. 自动跟随系统亮/暗模式 */
+/* 深色模式适配 */
 @media (prefers-color-scheme: dark) {
-  /* 夜间模式 */
   :root {
-    --bg1: #121212;  /* 深色背景 */
-    --bg2: #1e1e1e;  /* 更暗背景 */
-    --card: rgba(255, 255, 255, 0.10);  /* 卡片背景 */
-    --text: #f2f3ff;  /* 文字颜色 */
-    --muted: #9aa0c6;
-  }
-
-  .bubble {
-    background: linear-gradient(180deg, var(--card), rgba(255,255,255,.04));
-  }
-
-  .notePaper {
-    background: rgba(255,255,255,.06);
-  }
-
-  .focusQuote {
-    background: linear-gradient(180deg, rgba(255,253,247,.82), rgba(255,255,255,.22));
-    border: 1px dashed rgba(125,140,255,.28);
+    --bg-light: #0A0A15;
+    --iris-soft: #1A1A2E;
+    --text-main: #E0E0FF;
+    --text-sub: #9A9ABF;
+    --card-shadow: 0 15px 45px rgba(0, 0, 0, 0.4);
+    --iris-medium: #9A9AE0;
+    --border-line: rgba(255, 255, 255, 0.08);
   }
 }
 
-@media (prefers-color-scheme: light) {
-  /* 白天模式 */
-  :root {
-    --bg1: #fbfbff;  /* 浅色背景 */
-    --bg2: #f3f5ff;  /* 更浅背景 */
-    --card: rgba(255, 255, 255, .70);  /* 卡片背景 */
-    --text: #2b2f45;  /* 文字颜色 */
-    --muted: #7a7f9f;
-  }
+* { box-sizing: border-box; outline: none; }
 
-  .bubble {
-    background: linear-gradient(180deg, var(--card), rgba(255,255,255,.04));
-  }
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, sans-serif;
+  background: var(--bg-light);
+  /* 使用鸢尾花纹底图，若图片路径正确可替换 */
+  background-image: radial-gradient(circle at 20% 20%, rgba(154, 154, 224, 0.05), transparent),
+                    linear-gradient(135deg, var(--bg-light) 0%, #F1F1FF 100%);
+  color: var(--text-main);
+  min-height: 100vh;
+  display: flex; justify-content: center; align-items: center;
+  padding: 20px;
+}
 
-  .notePaper {
-    background: linear-gradient(180deg, rgba(255,253,247,.92), rgba(255,255,255,.40));
-  }
+@media (prefers-color-scheme: dark) {
+  body { background-image: radial-gradient(circle at 20% 20%, rgba(154, 154, 224, 0.08), transparent), linear-gradient(135deg, var(--bg-light) 0%, #12122A 100%); }
+}
 
-  .focusQuote {
-    background: linear-gradient(180deg, rgba(255,253,247,.82), rgba(255,255,255,.22));
-    border: 1px dashed rgba(125,140,255,.28);
+.shell {
+  width: 1080px; max-width: 100%;
+  display: grid; grid-template-columns: 1fr 400px; gap: 24px;
+}
+@media (max-width: 950px) { .shell { grid-template-columns: 1fr; } }
+
+.card {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(25px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--radius-l);
+  padding: 30px;
+  box-shadow: var(--card-shadow);
+  display: flex; flex-direction: column;
+}
+[data-theme="dark"] .card, @media (prefers-color-scheme: dark) {
+  .card { background: rgba(25, 25, 45, 0.85); border: 1px solid rgba(255,255,255,0.05); }
+}
+
+/* 计时器圆环与呼吸动画 */
+.timer-box { text-align: center; padding: 20px 0; }
+.ring-container {
+  width: 260px; height: 260px; margin: 0 auto; position: relative;
+}
+.ring-container svg { transform: rotate(-90deg); width: 100%; height: 100%; }
+.time-text {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  font-size: 64px; font-weight: 400; letter-spacing: 4px;
+  font-family: 'Cormorant Garamond', serif;
+  text-shadow: 0 2px 10px rgba(93, 118, 203, 0.3);
+}
+.breathing { animation: iris-breath 3s ease-in-out infinite; }
+@keyframes iris-breath {
+  0%, 100% { filter: drop-shadow(0 0 5px var(--iris-purple)); opacity: 0.8; }
+  50% { filter: drop-shadow(0 0 20px var(--iris-blue)); opacity: 1; }
+}
+
+/* 果冻按钮 */
+.btn-jelly {
+  background: var(--iris-blue); color: white; border: none;
+  padding: 14px 40px; border-radius: 20px; font-size: 16px;
+  cursor: pointer; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 8px 15px rgba(93, 118, 203, 0.3);
+}
+.btn-jelly:active { transform: scale(0.92); box-shadow: 0 4px 8px rgba(93, 118, 203, 0.2); }
+
+/* 输入框联动样式 */
+.setting-input {
+  width: 60px; border: none; background: var(--iris-soft);
+  padding: 8px; border-radius: 12px; text-align: center;
+  color: var(--text-main); font-weight: 700;
+}
+
+/* 鸢尾便签卡片 */
+.note-area {
+  background: linear-gradient(145deg, var(--iris-soft), #FFF);
+  padding: 25px; border-radius: var(--radius-m);
+  border: 1px dashed var(--iris-purple); min-height: 180px;
+  display: flex; flex-direction: column; justify-content: center;
+}
+[data-theme="dark"] .note-area, @media (prefers-color-scheme: dark) {
+  .note-area { background: var(--iris-soft); }
+}
+
+/* 日历网格 */
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+.cal-cell {
+  aspect-ratio: 1; border-radius: 12px; border: 1px solid rgba(0,0,0,0.05);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font-size: 12px; cursor: pointer; background: rgba(154, 154, 224, 0.05);
+  transition: all 0.2s;
+}
+.cal-cell:hover { background: var(--iris-soft); transform: scale(1.05); }
+.cal-cell.today { border: 2px solid var(--iris-blue); background: white; }
+@media (prefers-color-scheme: dark) {
+  .cal-cell.today { background: var(--iris-soft); }
+}
+.cal-cell .mood-icons {
+  font-size: 10px; margin-top: 2px;
+}
+
+/* 弹窗系统 */
+.overlay {
+  position: fixed; inset: 0; background: rgba(13, 13, 26, 0.7);
+  display: none; align-items: center; justify-content: center; z-index: 1000;
+  backdrop-filter: blur(12px);
+}
+.modal {
+  background: var(--bg-light); width: 95%; max-width: 800px; height: 85vh;
+  border-radius: var(--radius-l); overflow: hidden; display: flex; flex-direction: column;
+}
+.modal-header { padding: 20px 30px; border-bottom: 1px solid var(--border-line); display: flex; justify-content: space-between; align-items: center; }
+.modal-body { flex: 1; overflow-y: auto; padding: 0; }
+iframe { width: 100%; height: 100%; border: none; }
+
+.item-row { padding: 20px; border-bottom: 1px solid rgba(0,0,0,0.05); cursor: pointer; transition: 0.2s; }
+.item-row:hover { background: var(--iris-soft); }
+
+/* Toast 提示 */
+.toast {
+  position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
+  background: var(--iris-blue); color: white; padding: 16px 32px; 
+  border-radius: 20px; font-size: 15px; z-index: 2000;
+  opacity: 0; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 10px 30px rgba(93, 118, 203, 0.4);
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* 今日心情计数 */
+.today-mood-count {
+  font-size: 13px; color: var(--text-sub); margin-top: 10px;
+}
+.today-mood-count span { color: var(--iris-blue); font-weight: bold; }
+
+/* 心情历史记录 */
+.mood-history-item {
+  display: flex; align-items: center; gap: 10px; 
+  padding: 8px 12px; background: var(--iris-soft); 
+  border-radius: 10px; margin-top: 8px; font-size: 13px;
+}
+.mood-history-item .time { color: var(--text-sub); font-size: 11px; }
+
+/* 音乐管理器 */
+#music-manager {
+  position: fixed;
+  bottom: 30px;
+  left: 30px;
+  z-index: 100;
+}
+.music-toggle-btn {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid var(--iris-soft);
+  color: var(--iris-blue);
+  padding: 12px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 5px 15px rgba(93, 118, 203, 0.15);
+}
+.music-toggle-btn:hover {
+  background: var(--iris-soft);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(93, 118, 203, 0.25);
+}
+.music-toggle-btn.playing {
+  background: var(--iris-blue);
+  color: white;
+}
+.music-panel {
+  position: absolute;
+  bottom: 55px;
+  left: 0;
+  width: 320px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid var(--iris-soft);
+  border-radius: var(--radius-m);
+  padding: 20px;
+  display: none;
+  box-shadow: 0 15px 40px rgba(93, 118, 203, 0.2);
+  backdrop-filter: blur(15px);
+}
+.music-panel.active {
+  display: block;
+  animation: slideUp 0.3s ease;
+}
+@media (prefers-color-scheme: dark) {
+  .music-panel { background: rgba(25, 25, 45, 0.95); }
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.music-panel-title {
+  font-size: 16px;
+  color: var(--iris-blue);
+  margin-bottom: 15px;
+  text-align: center;
+  border-bottom: 1px solid var(--border-line);
+  padding-bottom: 12px;
+}
+.music-upload-area {
+  border: 2px dashed var(--iris-soft);
+  border-radius: 15px;
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.music-upload-area:hover {
+  border-color: var(--iris-blue);
+  background: var(--iris-soft);
+}
+.music-upload-area input { display: none; }
+.music-upload-icon { font-size: 28px; margin-bottom: 8px; }
+.music-upload-text { color: var(--text-sub); font-size: 13px; }
+.music-list {
+  max-height: 180px;
+  overflow-y: auto;
+  margin-bottom: 15px;
+}
+.music-list::-webkit-scrollbar { width: 5px; }
+.music-list::-webkit-scrollbar-track { background: var(--iris-soft); border-radius: 3px; }
+.music-list::-webkit-scrollbar-thumb { background: var(--iris-purple); border-radius: 3px; }
+.music-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  background: var(--iris-soft);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+.music-item:hover {
+  transform: translateX(5px);
+  background: rgba(93, 118, 203, 0.1);
+}
+.music-item.active {
+  background: rgba(93, 118, 203, 0.15);
+  border: 1px solid var(--iris-blue);
+}
+.music-item-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  overflow: hidden;
+}
+.music-item-icon { font-size: 16px; }
+.music-item-name {
+  color: var(--text-main);
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.music-item-delete {
+  background: transparent;
+  border: none;
+  color: rgba(200, 100, 100, 0.6);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 5px;
+  transition: all 0.2s ease;
+}
+.music-item-delete:hover {
+  color: #c86464;
+  transform: scale(1.2);
+}
+.music-controls {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  padding-top: 15px;
+  border-top: 1px solid var(--border-line);
+}
+.music-control-btn {
+  background: var(--iris-soft);
+  border: 1px solid var(--iris-soft);
+  color: var(--iris-blue);
+  padding: 10px 20px;
+  border-radius: 15px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s ease;
+}
+.music-control-btn:hover {
+  background: var(--iris-blue);
+  color: white;
+}
+.music-control-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.music-control-btn.playing {
+  background: var(--iris-blue);
+  color: white;
+}
+.no-music {
+  text-align: center;
+  color: var(--text-sub);
+  font-size: 13px;
+  padding: 20px;
+}
+.volume-slider-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 0;
+  border-top: 1px solid var(--border-line);
+  margin-top: 10px;
+}
+.volume-icon {
+  font-size: 16px;
+  color: var(--iris-blue);
+}
+.volume-slider {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  background: var(--iris-soft);
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+}
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: var(--iris-blue);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.volume-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+.volume-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: var(--iris-blue);
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+}
+.volume-value {
+  font-size: 12px;
+  color: var(--text-sub);
+  min-width: 35px;
+  text-align: right;
+}
+
+/* 响应式适配 */
+@media (max-width: 950px) {
+  .shell { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  body {
+    padding: 10px;
+    align-items: flex-start;
+  }
+  .shell {
+    gap: 16px;
+  }
+  .card {
+    padding: 20px;
+  }
+  .ring-container {
+    width: 200px; height: 200px;
+  }
+  .time-text {
+    font-size: 48px;
+    letter-spacing: 2px;
+  }
+  .modal {
+    height: 90vh;
+    width: 98%;
+    border-radius: 24px;
+  }
+  .modal-header {
+    padding: 15px 20px;
+  }
+  .cal-grid {
+    gap: 4px;
+  }
+  .cal-cell {
+    font-size: 10px;
+    border-radius: 8px;
+  }
+  .cal-cell .mood-icons {
+    font-size: 8px;
   }
 }
 </style>
 </head>
 
 <body>
-<div class="grain"></div>
-
 <div class="shell">
+  <div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <h2 style="color:var(--iris-blue); margin:0;">拉文克劳休息室</h2>
+      <button class="btn-jelly" onclick="openShelf()" style="padding:8px 20px; border-radius:12px;">📚 书架目录</button>
+    </div>
 
-  <!-- LEFT -->
-  <div class="card leftCard">
-    <div class="pad">
-      <div class="header">
-        <div>
-          <h1 class="hTitle">拉文克劳休息室</h1>
-          <div class="hSub">属于你的小世界</div>
-        </div>
-        <div class="iconRow">
-          <button class="iconBtn" id="themeBtn" title="深色模式">🌓</button>
-          <button class="iconBtn" id="shelfBtn" title="书架">📚</button>
-        </div>
+    <div class="timer-box">
+      <div class="ring-container" id="timerRing">
+        <svg viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="45" stroke="var(--iris-soft)" stroke-width="4" fill="none" />
+          <circle id="progress" cx="50" cy="50" r="45" stroke="var(--iris-blue)" stroke-width="4" fill="none" stroke-dasharray="283" stroke-dashoffset="0" stroke-linecap="round" />
+        </svg>
+        <div class="time-text" id="timeLabel">25:00</div>
+      </div>
+      <div style="margin-top:30px;">
+        <button class="btn-jelly" id="toggleBtn">开始专注</button>
       </div>
     </div>
 
-    <div class="leftBody">
-      <div class="ringWrap">
-        <div class="ring">
-          <div class="glow"></div>
-          <svg viewBox="0 0 100 100">
-            <defs>
-              <linearGradient id="grad" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stop-color="var(--iris)"/>
-                <stop offset="100%" stop-color="var(--mint)"/>
-              </linearGradient>
-            </defs>
-            <circle cx="50" cy="50" r="42" stroke="rgba(0,0,0,.10)" stroke-width="10" fill="none"/>
-            <circle id="progress" cx="50" cy="50" r="42"
-              stroke="url(#grad)" stroke-width="10" fill="none"
-              stroke-linecap="round"
-              stroke-dasharray="263.89"
-              stroke-dashoffset="0"/>
-          </svg>
-          <div class="time" id="timeText">25:00</div>
-        </div>
-
-        <div class="controls">
-          <button class="btn" id="toggleBtn">开始</button>
-          <button class="btn secondary" id="oneLineBtn">一句话</button>
-        </div>
-
-        <div class="focusQuote">
-          <div class="fqTop">
-            <div class="fqMark">🦋</div>
-            <div class="fqLabel">专注语</div>
-          </div>
-          <div class="fqText" id="focusQuoteText">准备好了就开始吧。你只需要先走一步。</div>
-        </div>
-      </div>
+    <div id="focusQuote" style="text-align:center; padding:15px; background:var(--iris-soft); border-radius:20px; font-size:14px; min-height:50px;">
+      准备好了就开始吧。
     </div>
 
-    <div class="settingsRow">
-      <div class="setting">
-        <label>专注</label>
-        <input id="focusMin" type="number" value="25" min="1" />
-        <span class="hSub">分钟</span>
-      </div>
-
-      <div class="setting">
-        <label>休息</label>
-        <input id="breakMin" type="number" value="5" min="1" />
-        <span class="hSub">分钟</span>
-      </div>
-
-      <div class="stat">
-        <span class="k">番茄</span>
-        <span class="v" id="count">0</span>
-      </div>
+    <div style="display:flex; justify-content:center; gap:25px; margin-top:40px; border-top:1px solid rgba(0,0,0,0.05); padding-top:25px;">
+      <div>专注 <input type="number" id="fMin" value="25" class="setting-input"></div>
+      <div>休息 <input type="number" id="bMin" value="5" class="setting-input"></div>
+      <div style="font-size:14px; color:var(--text-sub);">🍅 <span id="tCount" style="color:var(--iris-blue); font-weight:bold;">0</span></div>
     </div>
   </div>
 
-  <!-- RIGHT -->
-  <div class="rightCol">
-
-    <!-- Iris note -->
+  <div style="display:flex; flex-direction:column; gap:24px;">
     <div class="card">
-      <div class="pad">
-        <div class="header">
-          <div>
-            <h1 class="hTitle">今日鸢尾便签</h1>
-            <div class="hSub" id="noteMeta">—</div>
-          </div>
-          <div class="iconRow">
-            <button class="iconBtn" id="openInboxBtn" title="信箱">✉️</button>
-          </div>
-        </div>
-
-        <div class="notePaper">
-          <div class="noteMain" id="noteMain">“先把自己照顾好，世界才有意义。”</div>
-          <div class="noteSrc" id="noteSrc">——（出处占位）</div>
-        </div>
-
-        <div class="noteActions">
-          <button class="btn secondary" id="saveNoteBtn">收下</button>
-        </div>
+      <h3 style="margin:0 0 15px 0; font-size:16px; color:var(--iris-medium);">今日鸢尾便签</h3>
+      <div class="note-area">
+        <div id="noteTxt" style="font-size:16px; font-style:italic;">载入中...</div>
+        <div id="noteAuth" style="font-size:12px; color:var(--text-sub); text-align:right; margin-top:15px;">——</div>
       </div>
     </div>
 
-    <!-- Mood diary -->
-    <div class="card">
-      <div class="pad">
-        <div class="header">
-          <div>
-            <h1 class="hTitle">今日心情</h1>
-            <div class="hSub">像贴纸一样记录</div>
-          </div>
-          <div class="iconRow">
-            <div class="datePill" id="todayPill">—</div>
-            <button class="iconBtn" id="moodCalendarBtn" title="心情日历">📅</button>
-          </div>
-        </div>
-
-        <div class="stickers" id="stickers"></div>
-
-        <div class="selectedLine">已选：</div>
-        <div class="selectedBadges" id="selectedBadges"></div>
-
-        <div class="hSub" style="margin-top:10px;">你可以随时修改到舒服为止。</div>
+    <div class="card" style="flex:1;">
+      <h3 style="margin:0; font-size:16px; color:var(--iris-medium);">今日心情贴纸</h3>
+      <div id="moodList" style="display:flex; flex-wrap:wrap; gap:10px; margin-top:20px;"></div>
+      <div id="todayMoodHistory" style="margin-top:15px;"></div>
+      <div class="today-mood-count" id="moodCountDisplay"></div>
+      <div style="margin-top:auto; padding-top:20px;">
+        <button class="btn-jelly" style="background:none; border:1px solid var(--iris-soft); color:var(--text-sub); width:100%;" onclick="openCalendar()">📅 查看心情日历</button>
       </div>
     </div>
-
   </div>
 </div>
 
-<!-- Bubble -->
-<div class="bubble" id="bubble">
-  <div class="quote" id="bubbleText"></div>
-  <div class="small" id="bubbleSmall"></div>
-</div>
-
-<!-- Modal -->
-<div class="overlay" id="overlay">
+<div class="overlay" id="modalOverlay">
   <div class="modal">
-    <div class="modalTop">
-      <div>
-        <div class="ttl" id="modalTitle">—</div>
-        <div class="sub" id="modalSub">—</div>
-      </div>
-      <button class="closeX" id="closeX">✕</button>
+    <div class="modal-header">
+      <span id="backBtn" style="cursor:pointer; color:var(--iris-blue); visibility:hidden;" onclick="renderRoot()">← 返回目录</span>
+      <span id="modalTitle" style="font-weight:700;">书架</span>
+      <span style="cursor:pointer; font-size:24px;" onclick="closeModal()">✕</span>
     </div>
-
-    <div class="reader" id="readerFrameWrap" style="display:none;">
-      <iframe id="readerFrame" src=""></iframe>
-    </div>
-
-    <div class="readerText" id="readerText" style="display:none;"></div>
-
-    <div class="list" id="modalList" style="display:none;"></div>
+    <div class="modal-body" id="modalContent"></div>
   </div>
 </div>
+
+<div class="toast" id="toast"></div>
+
+<div id="music-manager">
+  <button class="music-toggle-btn" id="musicToggleBtn" onclick="toggleMusicPanel()">
+    <span>🎵</span>
+    <span>音乐</span>
+  </button>
+  <div class="music-panel" id="music-panel">
+    <div class="music-panel-title">🎵 音乐管理</div>
+    
+    <div class="music-upload-area" onclick="document.getElementById('music-file-input').click()">
+      <input type="file" id="music-file-input" accept="audio/*" onchange="handleMusicUpload(event)" multiple>
+      <div class="music-upload-icon">📁</div>
+      <div class="music-upload-text">点击上传音乐文件<br>(MP3, WAV, OGG 等)</div>
+    </div>
+    
+    <div class="music-list" id="music-list">
+      <div class="no-music">暂无音乐</div>
+    </div>
+    
+    <div class="music-controls">
+      <button class="music-control-btn" id="playPauseBtn" onclick="togglePlayPause()" disabled>▶ 播放</button>
+    </div>
+    
+    <div class="volume-slider-container">
+      <span class="volume-icon">🔊</span>
+      <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="30" oninput="changeVolume(this.value)">
+      <span class="volume-value" id="volumeValue">30%</span>
+    </div>
+  </div>
+</div>
+
+<audio id="bgAudio" loop></audio>
 
 <script>
-/* helpers */
-const root = document.documentElement;
-function todayStr(){
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
-}
-function showBubble(text, small=""){
-  const b = document.getElementById("bubble");
-  document.getElementById("bubbleText").textContent = text;
-  document.getElementById("bubbleSmall").textContent = small;
-  b.classList.add("show");
-  clearTimeout(showBubble._t);
-  showBubble._t = setTimeout(()=>b.classList.remove("show"), 4200);
-}
-
-/* theme */
-const savedTheme = localStorage.getItem("raven_theme_v21");
-if(savedTheme) root.setAttribute("data-theme", savedTheme);
-document.getElementById("themeBtn").onclick = () => {
-  const cur = root.getAttribute("data-theme");
-  const next = (cur === "dark") ? "" : "dark";
-  if(next) root.setAttribute("data-theme", next);
-  else root.removeAttribute("data-theme");
-  localStorage.setItem("raven_theme_v21", next);
-  showBubble(next ? "深色模式已开启。" : "浅色模式回来啦。");
-};
-
-/* focus quotes */
-const focusPools = [
-  { id:"cathy", tag:"", lines:["把今天拆成一小段一小段。","你不需要完美，你只需要继续。","先把这一分钟稳住。"]},
-  { id:"blaise", tag:"Blaise", lines:["开始。不要等状态。","只做下一步。","专注。其余都先放下。"]},
-  { id:"sarah", tag:"Sarah", lines:["慢一点也没关系。","先呼吸，再动笔。","你会在完成里找到安静。"]},
-  { id:"noah", tag:"Noah", lines:["五分钟就行。","别跟脑子吵，先动起来。","先做一小块，赢回来。"]},
-];
-function pickFocusQuote(){
-  const p = focusPools[Math.floor(Math.random()*focusPools.length)];
-  const t = p.lines[Math.floor(Math.random()*p.lines.length)];
-  return p.tag ? `「${t}」 · ${p.tag}` : `「${t}」`;
-}
-const focusQuoteText = document.getElementById("focusQuoteText");
-
-/* pomodoro */
-let running=false;
-let leftSec=25*60, totalSec=25*60;
-let timer=null;
-let tomatoes=parseInt(localStorage.getItem("raven_tomatoes_v21")||"0",10);
-
-const timeText=document.getElementById("timeText");
-const progress=document.getElementById("progress");
-const countEl=document.getElementById("count");
-const focusMinEl=document.getElementById("focusMin");
-const breakMinEl=document.getElementById("breakMin");
-
-countEl.textContent=tomatoes;
-const CIRC=2*Math.PI*42;
-
-function fmt(s){
-  const m=String(Math.floor(s/60)).padStart(2,"0");
-  const ss=String(s%60).padStart(2,"0");
-  return `${m}:${ss}`;
-}
-function renderTimer(){
-  timeText.textContent=fmt(leftSec);
-  const ratio=leftSec/totalSec;
-  progress.style.strokeDasharray=`${CIRC.toFixed(2)}`;
-  progress.style.strokeDashoffset=`${(CIRC*(1-ratio)).toFixed(2)}`;
-  countEl.textContent=String(tomatoes);
-}
-function resetTimer(){
-  const f=Math.max(1, parseInt(focusMinEl.value||"25",10));
-  totalSec=f*60;
-  leftSec=totalSec;
-  renderTimer();
-}
-resetTimer();
-
-function refreshFocusQuote(){
-  focusQuoteText.textContent = pickFocusQuote();
-}
-
-document.getElementById("toggleBtn").onclick=()=>{ 
-  running=!running;
-  document.getElementById("toggleBtn").textContent=running?"暂停":"开始";
-
-  if(running){
-    refreshFocusQuote();
-    showBubble("开始吧。","专注语已就位。");
-    timer=setInterval(()=>{
-      leftSec=Math.max(0,leftSec-1);
-      renderTimer();
-      if(leftSec===0){
-        running=false;
-        clearInterval(timer);
-        document.getElementById("toggleBtn").textContent="开始";
-        tomatoes+=1;
-        localStorage.setItem("raven_tomatoes_v21", String(tomatoes));
-        showBubble("🍅 完成一段。","下一次开始会刷新新的专注语。");
-        resetTimer();
-      }
-    },1000);
-  }else{
-    clearInterval(timer);
-  }
-};
-document.getElementById("oneLineBtn").onclick=()=> showBubble(pickFocusQuote());
-
-/* Iris note: unsigned main + source (placeholder for now) */
+/* 1. 全局配置与数据 */
 const IRIS_NOTES = [
-  { text:"把自己照顾好，是一种力量。", src:"（出处：待补）" },
-  { text:"我允许自己慢一点，但不后退。", src:"（出处：待补）" },
+  { t: '"I wanna be defined by the things that I love. Not the things I\'m afraid of."', a: "Taylor Swift · Daylight" },
+  { t: '"I\'m still a believer, but I don\'t know why. I\'ve never been a natural, all I do is try, try, try."', a: "Taylor Swift · Mirrorball" },
+  { t: '"I\'d like to be my old self again, but I\'m still trying to find it."', a: "Taylor Swift · All Too Well" },
+  { t: '"This is me trying."', a: "Taylor Swift · this is me trying" },
+  { t: '"I\'m doing good, I\'m on some new shit. Been saying \'yes\' instead of \'no\'."', a: "Taylor Swift · the 1" },
+  { t: '"You drew stars around my scars, but now I\'m bleeding."', a: "Taylor Swift · Cardigan" },
+  { t: '"Long live all the mountains we moved, I had the time of my life fighting dragons with you."', a: "Taylor Swift · Long Live" },
+  { t: '"She lost him, but she found herself, and somehow that was everything."', a: "Taylor Swift · Out of the Woods" },
+  { t: '"It\'s a new soundtrack I could dance to this beat. The lights are so bright But they never blind me."', a: "Taylor Swift · Welcome to New York" },
+  { t: '"The best people in life are free."', a: "Taylor Swift · New Romantics" },
+  { t: '"Honey life is just a classroom. Cause baby I could build a castle out of all the bricks they threw at me."', a: "Taylor Swift · Out of the Woods" },
+  { t: '"The rest of the world was black and white. But we were in screaming color."', a: "Taylor Swift · Starlight" },
+  { t: '"But the monsters turned out to be just trees."', a: "Taylor Swift · Out of the Woods" },
+  { t: '"You\'ll spend your whole life singing the blues if you keep thinking that way."', a: "Taylor Swift · Shake It Off" }
 ];
-const NOTE_KEYS = { today:"raven_iris_note_today_v21", date:"raven_iris_note_date_v21", inbox:"raven_iris_note_inbox_v21" };
 
-function buildTodayNote(){
-  const date=todayStr();
-  const cached=localStorage.getItem(NOTE_KEYS.today);
-  const cachedDate=localStorage.getItem(NOTE_KEYS.date);
-  if(cached && cachedDate===date) return JSON.parse(cached);
-  const pick=IRIS_NOTES[Math.floor(Math.random()*IRIS_NOTES.length)];
-  const note={ date, text:pick.text, src:pick.src, saved:false };
-  localStorage.setItem(NOTE_KEYS.today, JSON.stringify(note));
-  localStorage.setItem(NOTE_KEYS.date, date);
-  return note;
-}
-function loadNoteInbox(){
-  try{ return JSON.parse(localStorage.getItem(NOTE_KEYS.inbox) || "[]"); }catch{ return []; }
-}
-function saveNoteToInbox(note){
-  const inbox = loadNoteInbox();
-  if(!inbox.some(x=>x.date===note.date)) inbox.unshift(note);
-  localStorage.setItem(NOTE_KEYS.inbox, JSON.stringify(inbox));
-  return inbox;
-}
-let todayNote=buildTodayNote();
-const noteMain=document.getElementById("noteMain");
-const noteSrc=document.getElementById("noteSrc");
-const noteMeta=document.getElementById("noteMeta");
+const FOCUS_DB = [
+  { name: "", txt: "专注地爱你自己。" },
+  { name: "Blaise", txt: "效率是唯一的优雅。别让杂念浪费你的时间。" },
+  { name: "Sarah", txt: "慢慢来也可以。" },
+  { name: "Noah", txt: "五分钟就行。别跟脑子吵架，先动起来！" }
+];
 
-function renderNote(){
-  noteMain.textContent=`“${todayNote.text}”`;
-  noteSrc.textContent=`—— ${todayNote.src}`;
-  noteMeta.textContent = `${todayNote.saved ? "已收下" : "未收下"} · ${todayNote.date}`;
-}
-renderNote();
-
-document.getElementById("saveNoteBtn").onclick=()=>{
-  todayNote.saved=true;
-  localStorage.setItem(NOTE_KEYS.today, JSON.stringify(todayNote));
-  saveNoteToInbox(todayNote);
-  renderNote();
-  showBubble("已收进信箱。");
+const SHELF_DATA = {
+  fanfics: [
+    { title: "密语", meta: "2025 生贺 · C&B", url: "fanfic/密语.pdf" },
+    { title: "北国之旅", meta: "Christmas Special", url: "fanfic/北国之旅.pdf" }
+  ],
+  skits: [
+    { date: "05-20", title: "520 特辑", url: "skits/520.html" }
+  ]
 };
 
-/* modal system */
-const overlay=document.getElementById("overlay");
-const closeX=document.getElementById("closeX");
-const modalTitle=document.getElementById("modalTitle");
-const modalSub=document.getElementById("modalSub");
-const readerFrameWrap=document.getElementById("readerFrameWrap");
-const readerFrame=document.getElementById("readerFrame");
-const readerText=document.getElementById("readerText");
-const modalList=document.getElementById("modalList");
+/* 2. 计时器深度联动核心 */
+let timer = null, isRest = false, timeLeft = 25 * 60, tomatoes = 0;
+const fMin = document.getElementById('fMin'), bMin = document.getElementById('bMin'), 
+      timeLabel = document.getElementById('timeLabel'), progress = document.getElementById('progress'),
+      ring = document.getElementById('timerRing');
 
-function openModal(){ overlay.classList.add("show"); }
-function closeModal(){
-  overlay.classList.remove("show");
-  readerFrameWrap.style.display="none";
-  readerText.style.display="none";
-  modalList.style.display="none";
-  readerFrame.src="";
-  readerText.textContent="";
-  modalList.innerHTML="";
+function updateUI() {
+  const m = Math.floor(timeLeft / 60), s = timeLeft % 60;
+  timeLabel.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  const total = (isRest ? bMin.value : fMin.value) * 60;
+  progress.style.strokeDashoffset = 283 * (1 - timeLeft / total);
 }
-closeX.onclick=closeModal;
-overlay.addEventListener("click",(e)=>{ if(e.target===overlay) closeModal(); });
 
-function openReader({title, sub, file, text}){
-  modalTitle.textContent=title;
-  modalSub.textContent=sub||"";
-  openModal();
-  if(file){
-    readerFrameWrap.style.display="block";
-    readerFrame.src=file;
-  }else{
-    readerText.style.display="block";
-    readerText.textContent=text||"";
+// 联动：修改输入框即时改变计时显示
+fMin.oninput = bMin.oninput = () => {
+  if(!timer) {
+    timeLeft = (isRest?bMin.value:fMin.value)*60;
+    updateUI();
+    showRandomQuote();
+  }
+};
+
+function showToast(msg, duration = 3000) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), duration);
+}
+
+function showRandomQuote() {
+  const q = FOCUS_DB[Math.floor(Math.random() * FOCUS_DB.length)];
+  document.getElementById('focusQuote').textContent = q.name ? `「${q.txt}」 —— ${q.name}` : `「${q.txt}」`;
+}
+
+document.getElementById('toggleBtn').onclick = function() {
+  if (timer) {
+    clearInterval(timer); timer = null; this.textContent = "继续专注";
+    ring.classList.remove('breathing');
+  } else {
+    ring.classList.add('breathing');
+    showRandomQuote();
+    timer = setInterval(() => {
+      timeLeft--; updateUI();
+      if (timeLeft <= 0) {
+        clearInterval(timer); timer = null;
+        isRest = !isRest;
+        if(!isRest) { 
+          tomatoes++; 
+          document.getElementById('tCount').textContent = tomatoes;
+          saveTomatoCount();
+        }
+        timeLeft = (isRest ? bMin.value : fMin.value) * 60;
+        showToast(isRest ? "这段辛苦了，喝杯红茶休息一下吧。" : "休息结束，我们开始下一段。", 4000);
+        updateUI(); this.textContent = "开始专注";
+        ring.classList.remove('breathing');
+        showRandomQuote();
+      }
+    }, 1000);
+    this.textContent = "暂停";
+  }
+};
+
+/* 3. 书架与弹窗逻辑 */
+function openShelf() { document.getElementById('modalOverlay').style.display='flex'; renderRoot(); }
+function closeModal() { document.getElementById('modalOverlay').style.display='none'; }
+
+function renderRoot() {
+  document.getElementById('backBtn').style.visibility = 'hidden';
+  document.getElementById('modalTitle').textContent = "书架目录";
+  document.getElementById('modalContent').innerHTML = `
+    <div class="item-row" onclick="renderList('fanfics')">📖 同人文系列 (Fanfics)</div>
+    <div class="item-row" onclick="renderList('skits')">🎭 小剧场档案 (Skits)</div>
+  `;
+}
+
+function renderList(cat) {
+  document.getElementById('backBtn').style.visibility = 'visible';
+  document.getElementById('modalTitle').textContent = cat==='fanfics'?'同人文列表':'小剧场列表';
+  const items = SHELF_DATA[cat];
+  document.getElementById('modalContent').innerHTML = items.map(it => `
+    <div class="item-row" onclick="openItem('${it.url}', '${it.title}', '${cat}')">
+      <div style="font-weight:700;">${it.title}</div>
+      <div style="font-size:12px; color:var(--text-sub);">${it.meta || it.date}</div>
+    </div>`).join('');
+}
+
+function openItem(url, title, cat) {
+  if (cat === 'fanfics' && url.endsWith('.pdf')) {
+    window.open(url, '_blank');
+  } else {
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('modalContent').innerHTML = `<iframe src="${url}"></iframe>`;
   }
 }
-function openList({title, sub, items, onClick}){
-  modalTitle.textContent=title;
-  modalSub.textContent=sub||"";
-  openModal();
-  modalList.style.display="block";
-  modalList.innerHTML="";
-  items.forEach((it, idx)=>{
-    const row=document.createElement("div");
-    row.className="item";
-    row.innerHTML=`<div class="p">${it.primary}</div><div class="s">${it.secondary||""}</div>`;
-    row.onclick=()=>onClick(it, idx);
-    modalList.appendChild(row);
-  });
+
+/* 4. 心情日历系统 */
+const MOODS = ['🌤️ 平静', '✨ 闪耀', '🌧️ 低落', '🌿 治愈', '🔥 动力'];
+
+function getMoodKey(date) {
+  const d = date || new Date();
+  return `mood_${d.getFullYear()}_${d.getMonth()+1}_${d.getDate()}`;
 }
 
-/* inbox */
-function openNoteInbox(){
-  const inbox=loadNoteInbox();
-  if(inbox.length===0){
-    openList({
-      title:"信箱",
-      sub:"这里会保存你收下的每一张鸢尾便签。",
-      items:[{ primary:"还没有收藏", secondary:"点「收下」就会存进来。" }],
-      onClick:()=>{}
+function getMoodsForDate(date) {
+  const key = getMoodKey(date);
+  const data = localStorage.getItem(key);
+  return data ? JSON.parse(data) : [];
+}
+
+function saveMoodForDate(date, moodText, toggle = false) {
+  const key = getMoodKey(date);
+  const existing = getMoodsForDate(date);
+  
+  if (toggle) {
+    // 切换模式：如果已存在则删除，不存在则添加
+    const existingIndex = existing.findIndex(item => item.mood === moodText);
+    if (existingIndex > -1) {
+      // 已存在，删除
+      existing.splice(existingIndex, 1);
+    } else {
+      // 不存在，添加
+      existing.push({
+        mood: moodText,
+        time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
+      });
+    }
+  } else {
+    // 传统模式：添加新记录
+    existing.push({
+      mood: moodText,
+      time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
     });
+  }
+  
+  localStorage.setItem(key, JSON.stringify(existing));
+}
+
+function getTomatoKey() {
+  const d = new Date();
+  return `tomato_${d.getFullYear()}_${d.getMonth()+1}_${d.getDate()}`;
+}
+
+function loadTomatoCount() {
+  const count = localStorage.getItem(getTomatoKey());
+  if (count) {
+    tomatoes = parseInt(count);
+    document.getElementById('tCount').textContent = tomatoes;
+  }
+}
+
+function saveTomatoCount() {
+  localStorage.setItem(getTomatoKey(), tomatoes.toString());
+}
+
+function renderMoods() {
+  const today = new Date();
+  const existingMoods = getMoodsForDate(today);
+  const existingMoodTexts = existingMoods.map(item => item.mood);
+  
+  document.getElementById('moodList').innerHTML = MOODS.map(m => {
+    const isSelected = existingMoodTexts.includes(m);
+    return `
+      <div style="padding:10px 15px; border-radius:15px; border:1px solid var(--iris-soft); cursor:pointer; font-size:14px; transition:all 0.2s; ${isSelected ? 'background:var(--iris-blue); color:white;' : 'background:transparent;'}" onclick="selectMood(this, '${m}')">${m}</div>
+    `;
+  }).join('');
+  updateTodayMoodDisplay();
+}
+
+function selectMood(el, moodText) {
+  const today = new Date();
+  const existingMoods = getMoodsForDate(today);
+  const isSelected = existingMoods.some(item => item.mood === moodText);
+  
+  // 切换模式保存
+  saveMoodForDate(today, moodText, true);
+  
+  // 更新按钮状态
+  if (isSelected) {
+    // 已选中，取消选中
+    el.style.background = 'transparent';
+    el.style.color = '';
+    showToast(`已取消今日心情：${moodText}`);
+  } else {
+    // 未选中，设为选中
+    el.style.background = 'var(--iris-blue)';
+    el.style.color = 'white';
+    showToast(`已记录今日心情：${moodText}`);
+  }
+  
+  updateTodayMoodDisplay();
+}
+
+function updateTodayMoodDisplay() {
+  const moods = getMoodsForDate(new Date());
+  const countEl = document.getElementById('moodCountDisplay');
+  const historyEl = document.getElementById('todayMoodHistory');
+  
+  if (moods.length > 0) {
+    countEl.innerHTML = `今日已记录 <span>${moods.length}</span> 种心情`;
+    historyEl.innerHTML = moods.map(m => `
+      <div class="mood-history-item">
+        <span>${m.mood}</span>
+        <span class="time">${m.time}</span>
+      </div>
+    `).join('');
+  } else {
+    countEl.innerHTML = '今天还没有记录心情哦～';
+    historyEl.innerHTML = '';
+  }
+}
+
+function openCalendar() {
+  document.getElementById('modalOverlay').style.display='flex';
+  document.getElementById('modalTitle').textContent = "心情日历";
+  document.getElementById('backBtn').style.visibility = 'hidden';
+  
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+  const today = now.getDate();
+  
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  
+  const weekDays = ['日', '一', '二', '三', '四', '五', '六'];
+  let html = `<div style="padding:25px;">`;
+  
+  html += `<div style="text-align:center; margin-bottom:20px; font-size:18px; font-weight:600;">${year}年${month+1}月</div>`;
+  
+  html += `<div class="cal-grid" style="margin-bottom:10px;">`;
+  weekDays.forEach(d => {
+    html += `<div style="text-align:center; font-size:12px; color:var(--text-sub); padding:5px;">${d}</div>`;
+  });
+  html += `</div>`;
+  
+  html += `<div class="cal-grid">`;
+  
+  for (let i = 0; i < firstDay; i++) {
+    html += `<div class="cal-cell" style="opacity:0.3;"></div>`;
+  }
+  
+  for (let day = 1; day <= daysInMonth; day++) {
+    const date = new Date(year, month, day);
+    const moods = getMoodsForDate(date);
+    const isToday = day === today;
+    
+    let moodIcons = '';
+    if (moods.length > 0) {
+      const uniqueMoods = [...new Set(moods.map(m => m.mood.split(' ')[0]))];
+      moodIcons = `<div class="mood-icons">${uniqueMoods.slice(0, 3).join('')}${moods.length > 3 ? '…' : ''}</div>`;
+    }
+    
+    html += `
+      <div class="cal-cell ${isToday ? 'today' : ''}" onclick="showDayMoods(${year}, ${month}, ${day})">
+        <b>${day}</b>
+        ${moodIcons}
+        ${moods.length > 0 ? `<div style="font-size:9px; color:var(--iris-blue);">${moods.length}种</div>` : ''}
+      </div>
+    `;
+  }
+  
+  html += `</div></div>`;
+  document.getElementById('modalContent').innerHTML = html;
+}
+
+function showDayMoods(year, month, day) {
+  const date = new Date(year, month, day);
+  const moods = getMoodsForDate(date);
+  const today = new Date();
+  const isToday = date.toDateString() === today.toDateString();
+  
+  document.getElementById('modalTitle').textContent = `${month+1}月${day}日心情`;
+  document.getElementById('backBtn').style.visibility = 'visible';
+  document.getElementById('backBtn').onclick = openCalendar;
+  
+  let html = `<div style="padding:25px;">`;
+  
+  if (moods.length === 0) {
+    html += `<div style="text-align:center; color:var(--text-sub); padding:40px;">这一天还没有记录心情</div>`;
+  } else {
+    html += `<div style="display:flex; flex-direction:column; gap:12px;">`;
+    moods.forEach((m, i) => {
+      html += `
+        <div class="mood-history-item" style="font-size:16px; padding:15px;">
+          <span style="font-size:24px;">${m.mood.split(' ')[0]}</span>
+          <span style="flex:1;">${m.mood.split(' ')[1]}</span>
+          <span class="time">${m.time}</span>
+        </div>
+      `;
+    });
+    html += `</div>`;
+  }
+  
+  if (isToday) {
+    html += `
+      <div style="margin-top:30px; padding-top:20px; border-top:1px solid var(--border-line);">
+        <h4 style="margin:0 0 15px 0; color:var(--iris-medium);">添加今日心情</h4>
+        <div style="display:flex; flex-wrap:wrap; gap:10px;">
+          ${MOODS.map(m => `
+            <div style="padding:10px 15px; border-radius:15px; border:1px solid var(--iris-soft); cursor:pointer; font-size:14px; transition:all 0.2s; background:transparent;" onclick="addMoodFromCalendar('${m}')">${m}</div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+  
+  html += `</div>`;
+  document.getElementById('modalContent').innerHTML = html;
+}
+
+function addMoodFromCalendar(moodText) {
+  const today = new Date();
+  saveMoodForDate(today, moodText);
+  showToast(`已记录心情：${moodText}`);
+  updateTodayMoodDisplay();
+  showDayMoods(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+}
+
+// 初始化便签
+const dayIdx = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
+const note = IRIS_NOTES[dayIdx % IRIS_NOTES.length];
+document.getElementById('noteTxt').textContent = note.t;
+document.getElementById('noteAuth').textContent = `—— ${note.a}`;
+
+// 加载番茄钟计数
+loadTomatoCount();
+
+renderMoods();
+updateUI();
+
+/* 5. 音乐管理系统 */
+let musicList = [];
+let currentMusicIndex = -1;
+let isPlaying = false;
+const bgAudio = document.getElementById('bgAudio');
+
+const DEFAULT_MUSIC_LIST = [
+  { id: 'mystery-of-love', name: 'Mystery of Love / Visions of Gideon', url: 'https://music.163.com/song/media/outer/url?id=1442339347.mp3', isDefault: false },
+  { id: 'moonlight', name: '月光', url: 'https://music.163.com/song/media/outer/url?id=1806854425.mp3', isDefault: false },
+  { id: 'fireplace', name: '壁炉', url: 'https://music.163.com/song/media/outer/url?id=532444923.mp3', isDefault: false },
+  { id: 'rain', name: '听雨', url: 'https://music.163.com/song/media/outer/url?id=853708.mp3', isDefault: false }
+];
+
+function initMusicManager() {
+  musicList = DEFAULT_MUSIC_LIST.map(m => ({ ...m }));
+  bgAudio.volume = 0.3;
+  updateMusicList();
+}
+
+function toggleMusicPanel() {
+  const panel = document.getElementById('music-panel');
+  panel.classList.toggle('active');
+}
+
+function handleMusicUpload(event) {
+  const files = event.target.files;
+  
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    if (file.type.startsWith('audio/')) {
+      const musicData = {
+        id: Date.now() + i,
+        name: file.name.replace(/\.[^/.]+$/, ''),
+        file: file,
+        url: URL.createObjectURL(file),
+        isDefault: false
+      };
+      musicList.push(musicData);
+    }
+  }
+  
+  updateMusicList();
+  event.target.value = '';
+  showToast('音乐已添加到列表');
+}
+
+function updateMusicList() {
+  const listContainer = document.getElementById('music-list');
+  
+  if (musicList.length === 0) {
+    listContainer.innerHTML = '<div class="no-music">暂无音乐</div>';
+    document.getElementById('playPauseBtn').disabled = true;
     return;
   }
-  openList({
-    title:"信箱",
-    sub:"按日期回看",
-    items: inbox.map(n=>({
-      primary:`${n.date} · 鸢尾便签`,
-      secondary:`“${n.text}”  —— ${n.src}`
-    })),
-    onClick:(it, idx)=>{
-      const n=inbox[idx];
-      openReader({ title:`鸢尾便签 · ${n.date}`, sub:n.src, text:`“${n.text}”\n\n—— ${n.src}` });
-    }
+  
+  document.getElementById('playPauseBtn').disabled = false;
+  listContainer.innerHTML = '';
+  
+  musicList.forEach((music, index) => {
+    const item = document.createElement('div');
+    item.className = 'music-item' + (index === currentMusicIndex ? ' active' : '');
+    
+    const deleteBtn = music.isDefault 
+      ? '' 
+      : `<button class="music-item-delete" onclick="deleteMusic(${index}, event)" title="删除">✕</button>`;
+    
+    item.innerHTML = `
+      <div class="music-item-info" onclick="selectMusic(${index})">
+        <span class="music-item-icon">🎵</span>
+        <span class="music-item-name">${music.name}</span>
+      </div>
+      ${deleteBtn}
+    `;
+    listContainer.appendChild(item);
   });
 }
-document.getElementById("openInboxBtn").onclick=openNoteInbox;
+
+function selectMusic(index) {
+  if (currentMusicIndex === index && isPlaying) {
+    return;
+  }
+  
+  currentMusicIndex = index;
+  const music = musicList[index];
+  
+  bgAudio.src = music.url;
+  bgAudio.load();
+  
+  if (isPlaying) {
+    playMusic();
+  }
+  
+  updateMusicList();
+  showToast(`已选择：${music.name}`);
+}
+
+function togglePlayPause() {
+  if (isPlaying) {
+    pauseMusic();
+  } else {
+    playMusic();
+  }
+}
+
+function playMusic() {
+  if (musicList.length === 0) return;
+  
+  if (currentMusicIndex === -1) {
+    selectMusic(0);
+  }
+  
+  bgAudio.play().then(() => {
+    isPlaying = true;
+    updatePlayButton();
+    document.getElementById('musicToggleBtn').classList.add('playing');
+  }).catch(e => {
+    console.log('播放失败:', e);
+    showToast('音乐播放失败，请尝试其他音乐');
+  });
+}
+
+function pauseMusic() {
+  bgAudio.pause();
+  isPlaying = false;
+  updatePlayButton();
+  document.getElementById('musicToggleBtn').classList.remove('playing');
+}
+
+function updatePlayButton() {
+  const btn = document.getElementById('playPauseBtn');
+  btn.textContent = isPlaying ? '⏸ 暂停' : '▶ 播放';
+  btn.classList.toggle('playing', isPlaying);
+}
+
+function changeVolume(value) {
+  bgAudio.volume = value / 100;
+  document.getElementById('volumeValue').textContent = value + '%';
+  const icon = document.querySelector('.volume-icon');
+  if (value == 0) {
+    icon.textContent = '🔇';
+  } else if (value < 30) {
+    icon.textContent = '🔈';
+  } else if (value < 70) {
+    icon.textContent = '🔉';
+  } else {
+    icon.textContent = '🔊';
+  }
+}
+
+function deleteMusic(index, event) {
+  event.stopPropagation();
+  
+  const music = musicList[index];
+  if (music.isDefault) return;
+  
+  if (currentMusicIndex === index) {
+    pauseMusic();
+    currentMusicIndex = -1;
+  } else if (currentMusicIndex > index) {
+    currentMusicIndex--;
+  }
+  
+  if (!music.isDefault && music.url.startsWith('blob:')) {
+    URL.revokeObjectURL(music.url);
+  }
+  
+  musicList.splice(index, 1);
+  updateMusicList();
+  showToast('音乐已删除');
+}
+
+bgAudio.addEventListener('ended', () => {
+  if (musicList.length > 1 && currentMusicIndex < musicList.length - 1) {
+    selectMusic(currentMusicIndex + 1);
+    playMusic();
+  } else if (musicList.length > 0) {
+    bgAudio.currentTime = 0;
+    bgAudio.play();
+  }
+});
+
+bgAudio.addEventListener('error', () => {
+  showToast('音乐加载失败，可能是链接不可用');
+});
+
+initMusicManager();
+</script>
+</body>
+</html>
